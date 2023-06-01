@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="My.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+<!--        <item name="android:enterFadeDuration">300</item>-->
+<!--        <item name="android:exitFadeDuration">400</item>-->
+        <item name="windowSplashScreenAnimationDuration">800</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/expenselogo</item>
+        <item name="postSplashScreenTheme"> @style/Theme.ExpenseTracker</item>
+    </style>
+</resources>
