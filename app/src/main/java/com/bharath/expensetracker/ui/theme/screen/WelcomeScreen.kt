@@ -1,4 +1,4 @@
-package com.bharath.expensetracker.ui.theme.Screen
+package com.bharath.expensetracker.ui.theme.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,25 +27,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.bharath.expensetracker.ui.theme.Navigation.Screen
-import com.bharath.expensetracker.ui.theme.onboarding.vm.WelcomeViewModel
 import com.bharath.expensetracker.ui.theme.onboarding.util.OnBoardingPage
-import com.bharath.expensetracker.ui.theme.viewmodel.NameViewModel
+import com.bharath.expensetracker.ui.theme.onboarding.vm.WelcomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WelcomeScreen(
     navController: NavHostController,
-    welcomeViewModel: WelcomeViewModel = hiltViewModel(),
-    nameViewModel: NameViewModel = hiltViewModel()
+    welcomeViewModel: WelcomeViewModel = hiltViewModel()
 ) {
     var name by remember{ mutableStateOf("")}
 
@@ -60,16 +54,16 @@ fun WelcomeScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
             modifier = Modifier.weight(10f),
-            count = 4,
+            count = 3,
             state = pagerState,
             verticalAlignment = Alignment.Top
         ) { position ->
-            if (position==3){
-                NameScreen()
-            }else{
+
+
+
             PagerScreen(onBoardingPage = pages[position])
         }
-        }
+
         HorizontalPagerIndicator(
             pagerState = pagerState,
             modifier = Modifier
@@ -136,7 +130,7 @@ fun FinishButton(
     ) {
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = pagerState.currentPage == 3
+            visible = pagerState.currentPage == 2
         ) {
             Button(
                 onClick = onClick, colors = ButtonDefaults.buttonColors(

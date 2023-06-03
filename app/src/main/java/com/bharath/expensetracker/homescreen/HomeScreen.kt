@@ -1,7 +1,6 @@
 package com.bharath.expensetracker.homescreen
 
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,28 +10,34 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import com.bharath.expensetracker.ui.theme.Grad1
 import com.bharath.expensetracker.ui.theme.Grad2
-import com.bharath.expensetracker.ui.theme.list.CustomCard
-import com.bharath.expensetracker.ui.theme.viewmodel.NameViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen() {
-    val viewModel:NameViewModel= hiltViewModel()
+    Surface(color = MaterialTheme.colorScheme.background) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -45,10 +50,14 @@ fun HomeScreen() {
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Grad1, Grad2
+                            MaterialTheme.colorScheme.primary,
+                           MaterialTheme.colorScheme.onPrimary
                         )
                     )
-                ),
+
+                )
+                .alpha(0.5f)
+            ,
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -80,17 +89,44 @@ fun HomeScreen() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(6f)
+                .weight(5f)
         ) {
 
 
 
-            Toast.makeText(LocalContext.current, viewModel.GetName(), Toast.LENGTH_SHORT).show()
+
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+
+//            NavigationBarWithOnlySelectedLabelsSample()
+
+
         }
 
     }
+    }
 }
+@Composable
+fun NavigationBarWithOnlySelectedLabelsSample() {
+    var selectedItem by remember { mutableStateOf(0) }
+    val items = listOf("Songs", "Artists", "Playlists")
 
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = { Icon(Icons.Filled.Favorite, contentDescription = item) },
+                label = { Text(item) },
+                selected = selectedItem == index,
+                onClick = { selectedItem = index },
+                alwaysShowLabel = false
+            )
+        }
+    }
+}
 @Composable
 fun IncomeExpenseTxt(income: Float, Expense: Float) {
     Row {
