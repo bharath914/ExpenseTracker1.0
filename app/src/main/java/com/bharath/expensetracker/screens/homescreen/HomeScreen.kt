@@ -1,4 +1,4 @@
-package com.bharath.expensetracker.homescreen
+package com.bharath.expensetracker.screens.homescreen
 
 
 import androidx.compose.foundation.background
@@ -51,7 +51,7 @@ fun HomeScreen() {
                     Brush.verticalGradient(
                         colors = listOf(
                             MaterialTheme.colorScheme.primary,
-                           MaterialTheme.colorScheme.onPrimary
+                            MaterialTheme.colorScheme.onPrimary
                         )
                     )
 
@@ -91,6 +91,7 @@ fun HomeScreen() {
                 .fillMaxWidth()
                 .weight(5f)
         ) {
+            
 
 
 

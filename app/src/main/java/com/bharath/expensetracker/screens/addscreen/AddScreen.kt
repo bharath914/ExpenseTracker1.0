@@ -1,7 +1,5 @@
-package com.bharath.expensetracker.addscreen
+package com.bharath.expensetracker.screens.addscreen
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -21,6 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -35,9 +35,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.bharath.expensetracker.data.model.Transactions
+import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
+import com.bharath.expensetracker.ui.theme.Inter_Bold
+import com.bharath.expensetracker.ui.theme.Inter_Regular
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -50,15 +56,47 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun AddScreen() {
+fun AddScreen(
+
+) {
     Surface(color = MaterialTheme.colorScheme.background) {
         var valueRupees by remember {
             mutableStateOf("")
         }
+        var nameOfPay by remember {
+            mutableStateOf("")
+        }
+        var isExpanded by remember {
+            mutableStateOf(false)
+        }
+        var type by remember {
+            mutableStateOf("")
+
+        }
+
+        var isExpanded2 by remember {
+            mutableStateOf(false)
+        }
+        var isselected by remember {
+            mutableStateOf(false)
+        }
+        var date by remember{
+            mutableStateOf("${LocalDate.now()}")
+        }
+        var time by remember {
+            mutableStateOf("${LocalTime.now().hour }"+" h: "+"${LocalTime.now().minute}"+" m")
+        }
+
+        var category by remember { mutableStateOf("") }
+        val calendarState = rememberSheetState()
+        val clockState= rememberSheetState()
+        var clicktoSave = remember {
+            mutableStateOf(false)
+        }
+
         var keyboardcontroller = LocalSoftwareKeyboardController.current
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -66,7 +104,33 @@ fun AddScreen() {
             verticalArrangement = Arrangement.Center
         ) {
 
+            OutlinedTextField(
+                value = nameOfPay,
 
+                label = {
+                    Text(text = nameOfPay, color = MaterialTheme.colorScheme.primary)
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(),
+                placeholder = {
+                    Text(text = "Enter The Detail of Expense/Income ", color = MaterialTheme.colorScheme.primary)
+                },
+                onValueChange = {
+                    nameOfPay = it
+                },
+
+                modifier = Modifier
+                    .alpha(0.9f)
+                    .background(MaterialTheme.colorScheme.background),
+                singleLine = true,
+                maxLines = 1,
+
+
+                keyboardActions = KeyboardActions(onDone = {
+                    keyboardcontroller?.hide()
+                }
+                ),
+            )
+            Spacer(modifier = Modifier.height(35.dp))
             OutlinedTextField(
                 value = valueRupees,
 
@@ -102,30 +166,6 @@ fun AddScreen() {
                 ) {
 
 
-                    var isExpanded by remember {
-                        mutableStateOf(false)
-                    }
-                    var type by remember {
-                        mutableStateOf("")
-
-                    }
-
-                    var isExpanded2 by remember {
-                        mutableStateOf(false)
-                    }
-                    var isselected by remember {
-                        mutableStateOf(false)
-                    }
-                    var date by remember{
-                        mutableStateOf("${LocalDate.now()}")
-                    }
-                    var time by remember {
-                        mutableStateOf("${LocalTime.now().hour }"+" h: "+"${LocalTime.now().minute}"+" m")
-                    }
-
-                    var category by remember { mutableStateOf("") }
-                    val calendarState = rememberSheetState()
-                    val clockState= rememberSheetState()
 
 
 
@@ -276,7 +316,7 @@ fun AddScreen() {
 
                         } )
                         Spacer(modifier = Modifier.height(35.dp))
-                        Text(text = "Time : ${time}              $date", color = MaterialTheme.colorScheme.primary,
+                        Text(text = "Time : $time              $date", color = MaterialTheme.colorScheme.primary,
                         fontSize = 18.sp, modifier = Modifier.alpha(0.8f), fontStyle = FontStyle.Italic)
                         Spacer(modifier = Modifier.height(20.dp))
                         OutlinedButton(onClick = {
@@ -290,13 +330,80 @@ fun AddScreen() {
                 }
             }
             Spacer(modifier = Modifier.height(35.dp))
-            OutlinedButton(onClick = { }
+            OutlinedButton(onClick = {
+
+               clicktoSave.value= ! clicktoSave.value
+
+            }
             ) {
                 Text(text = "Tap to Save", color = MaterialTheme.colorScheme.primary)
             }
 
+
         }
+        if (clicktoSave.value){
+            OnclickSaver(
+                descriptionOfPayment = nameOfPay,
+                amount =valueRupees ,
+                type = type,
+                category = category,
+                time = time,
+                date = date
+            )
+        }
+    }
+
+
+}
+
+@Composable
+fun OnclickSaver(
+     descriptionOfPayment:String,
+     amount : String,
+     type:String,
+    category:String,
+     time:String,
+    date:String,
+) {
+
+   val viewmodelT: AddToDBViewModel = hiltViewModel()
+
+    val transactionDetail=Transactions(descriptionOfPayment = descriptionOfPayment,amount = amount, type =type , category = category, time =time , date =date )
+    if (descriptionOfPayment !="" && amount !="" && type !="" &&category!=""){
+        viewmodelT.saveToDb(transactionDetail)
+
+    }
+
+    else{
+        CustomDialog(true)
     }
 }
 
+@Composable
+fun CustomDialog(bool:Boolean) {
+    var openDialog by remember{ mutableStateOf(bool) }
+    if (openDialog){
 
+        AlertDialog(
+            onDismissRequest = {
+                openDialog=false
+            },
+            title = { Text(text = "Invalid Details", textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary, fontFamily = Inter_Bold, fontSize = 20.sp, modifier = Modifier.fillMaxWidth())},
+            text = { Text(text = "Please Enter All the Details and then tap on the 'tap to save' button",textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary, fontFamily = Inter_Regular, fontSize = 16.sp)},
+            dismissButton = {
+            TextButton(onClick = { openDialog=false }) {
+                                        
+                Text(text = "Dismiss", color = MaterialTheme.colorScheme.secondary)
+            }
+
+            },
+            confirmButton = {}
+
+        )
+
+
+
+
+
+    }
+}

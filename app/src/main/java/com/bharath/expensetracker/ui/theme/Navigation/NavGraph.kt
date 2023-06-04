@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.bharath.expensetracker.homescreen.HomeScreen
+import com.bharath.expensetracker.screens.homescreen.HomeScreen
 import com.bharath.expensetracker.ui.theme.screen.WelcomeScreen
 
 @Composable
