@@ -1,17 +1,17 @@
 package com.bharath.expensetracker.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
 @Entity
 data class Transactions(
-    val descriptionOfPayment:String,
-    val amount : String,
-    val type:String,
-    val category:String,
-    val time:String,
-    val date:String,
-
-    @PrimaryKey  val id :Int ?=null
+    @ColumnInfo(DbConst.description) val descriptionOfPayment: String,
+    @ColumnInfo(DbConst.amount) val amount: Float,
+    @ColumnInfo(DbConst.type) val type: String,
+    @ColumnInfo(DbConst.category) val category: String,
+    @ColumnInfo(DbConst.time) val time: String,
+    @ColumnInfo(DbConst.date) val date: String,
+    @PrimaryKey(autoGenerate = true) val id: Int? = null,
 )

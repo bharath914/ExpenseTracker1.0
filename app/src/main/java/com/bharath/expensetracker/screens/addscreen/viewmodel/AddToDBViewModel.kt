@@ -30,7 +30,7 @@ class AddToDBViewModel @Inject constructor (
 
     var isLoading= mutableStateOf(false)
 
-    var list=repository.getTransactions()
+//    var list=repository.getTransactions()
     fun saveToDb(transactions: Transactions){
 
         val job=viewModelScope.launch {

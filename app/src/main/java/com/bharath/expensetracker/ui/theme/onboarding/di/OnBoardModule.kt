@@ -17,27 +17,27 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 
-@Module
-@InstallIn(SingletonComponent::class)
+//@Module
+//@InstallIn(SingletonComponent::class)
 object OnBoardModule{
-    @Provides
-    @Singleton
-    fun provideDataStoreRepo(@ApplicationContext context:Context)= DataStoreRepository(context)
-
-    @Provides
-    @Singleton
-    fun provideRepository(db: DataBase): RepositoryInterface = Repository(db.dao)
-
-
-    @Provides
-    @Singleton
-    fun provideDataBase(app: Application): DataBase {
-        return Room.databaseBuilder(
-            app,
-            DataBase::class.java,
-            Cons.database_Name
-        ).build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideDataStoreRepo(@ApplicationContext context:Context)= DataStoreRepository(context)
+//
+//    @Provides
+//    @Singleton
+//    fun provideRepository(db: DataBase): RepositoryInterface = Repository(db.dao)
+//
+//
+//    @Provides
+//    @Singleton
+//    fun provideDataBase(app: Application): DataBase {
+//        return Room.databaseBuilder(
+//            app,
+//            DataBase::class.java,
+//            Cons.database_Name
+//        ).build()
+//    }
 
 
 }

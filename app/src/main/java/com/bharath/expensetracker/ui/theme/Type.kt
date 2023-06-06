@@ -31,6 +31,9 @@ val Lato_Regular= FontFamily(
 val Lato_LightItalic= FontFamily(
     Font(R.font.lato_lightitalic)
 )
+val Lato_Bold = FontFamily(
+    Font(R.font.lato_bold)
+)
 
 val Typography = Typography(
     bodyLarge = TextStyle(

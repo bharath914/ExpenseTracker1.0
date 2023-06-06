@@ -54,6 +54,7 @@ import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -80,7 +81,7 @@ fun AddScreen(
         var isExpanded2 by remember {
             mutableStateOf(false)
         }
-        var isselected by remember {
+        var isSelected by remember {
             mutableStateOf(false)
         }
         var date by remember{
@@ -93,11 +94,11 @@ fun AddScreen(
         var category by remember { mutableStateOf("") }
         val calendarState = rememberSheetState()
         val clockState= rememberSheetState()
-        var clicktoSave = remember {
+        val clickToSave = remember {
             mutableStateOf(false)
         }
 
-        var keyboardcontroller = LocalSoftwareKeyboardController.current
+        val keyboardController = LocalSoftwareKeyboardController.current
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -118,6 +119,7 @@ fun AddScreen(
                     nameOfPay = it
                 },
 
+
                 modifier = Modifier
                     .alpha(0.9f)
                     .background(MaterialTheme.colorScheme.background),
@@ -126,20 +128,23 @@ fun AddScreen(
 
 
                 keyboardActions = KeyboardActions(onDone = {
-                    keyboardcontroller?.hide()
+                    keyboardController?.hide()
                 }
                 ),
             )
             Spacer(modifier = Modifier.height(35.dp))
             OutlinedTextField(
-                value = valueRupees,
+                value =valueRupees,
 
                 label = {
                     Text(text = valueRupees, color = MaterialTheme.colorScheme.primary)
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(),
                 placeholder = {
-                              Text(text = "Enter The Amount ", color = MaterialTheme.colorScheme.primary)
+                              Text(
+                                  text = "Enter The Amount ",
+                                  color = MaterialTheme.colorScheme.primary
+                              )
                 },
                 onValueChange = {
                     valueRupees = it
@@ -153,7 +158,7 @@ fun AddScreen(
 
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 keyboardActions = KeyboardActions(onDone = {
-                    keyboardcontroller?.hide()
+                    keyboardController?.hide()
                 }
                 ),
             )
@@ -178,7 +183,7 @@ fun AddScreen(
                             onValueChange = {},
                             readOnly = true,
                             placeholder = {
-                                Text(text = "Expense", color = MaterialTheme.colorScheme.primary)
+                                Text(text = "Select Income/Expense", color = MaterialTheme.colorScheme.primary)
                             },
                             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                             trailingIcon = {
@@ -198,7 +203,7 @@ fun AddScreen(
                             }, onClick = {
                                 type = "Income"
                                 isExpanded = false
-                                isselected = true
+                                isSelected = true
                             })
                             DropdownMenuItem(text = {
                                 Text(
@@ -208,13 +213,13 @@ fun AddScreen(
                             }, onClick = {
                                 type = "Expense"
                                 isExpanded = false
-                                isselected = true
+                                isSelected = true
                             })
                         }
                     }
 
                     Spacer(modifier = Modifier.height(35.dp))
-                    val expensecat = arrayOf(
+                    val expenseCat = arrayOf(
                         "Clothing",
                         "Food",
                         "Movie",
@@ -224,9 +229,9 @@ fun AddScreen(
                         "Electronics",
                         "Other"
                     )
-                    val incomcat =
+                    val incomeCat =
                         arrayOf("Salary", "Business profit", "Gifts", "CashBack", "Other")
-                    if (isselected) {
+                    if (isSelected) {
                         ExposedDropdownMenuBox(expanded = isExpanded2, onExpandedChange = {
                             isExpanded2 = it
                         }) {
@@ -256,7 +261,7 @@ fun AddScreen(
                             }) {
                                 if (type == "Expense") {
 
-                                    expensecat.forEach {
+                                    expenseCat.forEach {
                                         DropdownMenuItem(text = {
                                             Text(
                                                 text = it,
@@ -269,7 +274,7 @@ fun AddScreen(
                                     }
 
                                 } else if (type == "Income") {
-                                    incomcat.forEach {
+                                    incomeCat.forEach {
                                         DropdownMenuItem(text = {
                                             Text(
                                                 text = it,
@@ -288,7 +293,7 @@ fun AddScreen(
 
 
                     }
-                    if (isselected) {
+                    if (isSelected) {
                         CalendarDialog(
                             state = calendarState,
                             config = CalendarConfig(
@@ -332,7 +337,7 @@ fun AddScreen(
             Spacer(modifier = Modifier.height(35.dp))
             OutlinedButton(onClick = {
 
-               clicktoSave.value= ! clicktoSave.value
+               clickToSave.value= ! clickToSave.value
 
             }
             ) {
@@ -341,7 +346,7 @@ fun AddScreen(
 
 
         }
-        if (clicktoSave.value){
+        if (clickToSave.value){
             OnclickSaver(
                 descriptionOfPayment = nameOfPay,
                 amount =valueRupees ,
@@ -366,11 +371,12 @@ fun OnclickSaver(
     date:String,
 ) {
 
-   val viewmodelT: AddToDBViewModel = hiltViewModel()
+   val viewModelT: AddToDBViewModel = hiltViewModel()
 
-    val transactionDetail=Transactions(descriptionOfPayment = descriptionOfPayment,amount = amount, type =type , category = category, time =time , date =date )
     if (descriptionOfPayment !="" && amount !="" && type !="" &&category!=""){
-        viewmodelT.saveToDb(transactionDetail)
+         val transactionDetail=Transactions(descriptionOfPayment = descriptionOfPayment,amount = amount.toFloat(), type =type , category = category, time =time , date =date )
+
+        viewModelT.saveToDb(transactionDetail)
 
     }
 
