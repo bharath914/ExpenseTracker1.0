@@ -13,7 +13,8 @@ interface RepositoryInterface {
     fun getFewCustomTransactions(typeSpend: String):Flow<List<Transactions>>
      fun getSumOfTransaction(type:String):Flow<Float>
      suspend fun checkIsEmpty(type: String):Flow<Int>
-     suspend fun getHighestPayment(type: String):Flow<Float>
+     suspend fun getHighestPayment(type: String):List<Transactions>
+     suspend fun getLowestPayment(type: String):List<Transactions>
 //     suspend fun getHighestPaymentDetail(float: Float):Flow<Transactions>
 
 }

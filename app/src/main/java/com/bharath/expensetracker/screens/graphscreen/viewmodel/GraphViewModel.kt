@@ -15,48 +15,53 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GraphViewModel @Inject constructor(
-    private val repository: RepositoryInterface
-) :ViewModel() {
+    private val repository: RepositoryInterface,
+) : ViewModel() {
 
-    var expenseSum :Flow<Float> = emptyFlow()
-    var incomeSum :Flow<Float> = emptyFlow()
+    var expenseSum: Flow<Float> = emptyFlow()
+    var incomeSum: Flow<Float> = emptyFlow()
     var isLoadingG = mutableStateOf(false)
-    var highestTransactionExp:Flow<Float> = emptyFlow()
-    var highestTransactionDetail:Flow<Transactions> = emptyFlow()
+    var isLoadedRangeHigh = mutableStateOf(false)
+    var isLoadedRangeLow = mutableStateOf(false)
+    var highestTransactionExp: List<Transactions> = emptyList()
+
+    var LowestTransaction: List<Transactions> = emptyList()
 
 
     init {
 
-        val j=viewModelScope.launch (Dispatchers.IO){
-            expenseSum =repository.getSumOfTransaction("Expense")
-            incomeSum=repository.getSumOfTransaction("Income")
+        val j = viewModelScope.launch(Dispatchers.IO) {
+            expenseSum = repository.getSumOfTransaction("Expense")
+            incomeSum = repository.getSumOfTransaction("Income")
 
         }
 
 
+        viewModelScope.launch(Dispatchers.IO) {
+            highestTransactionExp = repository.getHighestPayment("Expense")
+        }.start()
 
-            isLoadingG.value=true
+        viewModelScope.launch(Dispatchers.IO) {
+            LowestTransaction = repository.getHighestPayment("Income")
+        }.start()
+        isLoadedRangeHigh.value = true
+        isLoadedRangeLow.value = true
+        isLoadingG.value = true
 
     }
 
 
-    fun getHighestTransaction(type:String):Flow<Float>{
+    fun getHighestTransaction(type: String): List<Transactions> {
 
 
-        val k =viewModelScope.launch(Dispatchers.IO){
-            highestTransactionExp =repository.getHighestPayment(type)
-
-        }
         return highestTransactionExp
     }
-    fun getHighestTransactionDetail(float: Float):Flow<Transactions>{
-        viewModelScope.launch(Dispatchers.IO) {
-//            highestTransactionDetail =repository.getHighestPaymentDetail(float)
-        }
-        return highestTransactionDetail
+
+    fun getLowestTransaction(type: String): List<Transactions> {
+
+
+        return LowestTransaction
     }
-
-
 
 
 }

@@ -33,16 +33,20 @@ interface DaoDb
 
     @Query("SELECT SUM(Amount) From transactions Where Type =:exp")
     fun getSumOfPayments(exp:String):Flow<Float>
-    @Query("SELECT max(Amount) from transactions Where Type =:typeSpend")
-    fun getHighestPayment(typeSpend: String):Flow<Float>
+    @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY Amount DESC LIMIT 1")
+    fun getHighestPayment(typeSpend: String):List<Transactions>
+
+    @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY Amount ASC LIMIT 1")
+    fun getLowestPayment(typeSpend: String):List<Transactions>
+
 
 //    @Query("Select * from transactions Order by Amount DESC")
 //    fun getHighestPaymentDetail(amount:Float):Flow<Transactions>
-    @Query("Select * from transactions Order by Amount DESC")
-    fun getDescListofAllTransaction():Flow<List<Transactions>>
-
-    @Query("Select * from transactions Order by Amount Asc")
-    fun getAscListOfAllTransaction():Flow<List<Transactions>>
+//    @Query("Select * from transactions Order by Amount DESC")
+//    fun getDescListofAllTransaction():Flow<List<Transactions>>
+//
+//    @Query("Select * from transactions Order by Amount Asc")
+//    fun getAscListOfAllTransaction():Flow<List<Transactions>>
 
 
 }

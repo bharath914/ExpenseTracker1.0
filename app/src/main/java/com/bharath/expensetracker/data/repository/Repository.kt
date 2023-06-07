@@ -37,8 +37,12 @@ class Repository    (
         return dao.checkDbisEmptyorNot(type)
     }
 
-    override suspend fun getHighestPayment(type: String): Flow<Float> {
-        return dao.getHighestPayment(type).filterNotNull()
+    override suspend fun getHighestPayment(type: String): List<Transactions>  {
+        return dao.getHighestPayment(type)
+    }
+
+    override suspend fun getLowestPayment(type: String): List<Transactions> {
+        return dao.getLowestPayment(type).filterNotNull()
     }
 
 //    override suspend fun getHighestPaymentDetail(float: Float): Flow<Transactions> {
