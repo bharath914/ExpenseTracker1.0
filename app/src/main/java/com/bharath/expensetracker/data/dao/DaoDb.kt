@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.bharath.expensetracker.data.model.Transactions
 import kotlinx.coroutines.flow.Flow
 
@@ -34,7 +33,16 @@ interface DaoDb
 
     @Query("SELECT SUM(Amount) From transactions Where Type =:exp")
     fun getSumOfPayments(exp:String):Flow<Float>
+    @Query("SELECT max(Amount) from transactions Where Type =:typeSpend")
+    fun getHighestPayment(typeSpend: String):Flow<Float>
 
+//    @Query("Select * from transactions Order by Amount DESC")
+//    fun getHighestPaymentDetail(amount:Float):Flow<Transactions>
+    @Query("Select * from transactions Order by Amount DESC")
+    fun getDescListofAllTransaction():Flow<List<Transactions>>
+
+    @Query("Select * from transactions Order by Amount Asc")
+    fun getAscListOfAllTransaction():Flow<List<Transactions>>
 
 
 }

@@ -2,6 +2,7 @@ package com.bharath.expensetracker.screens.homescreen.ui
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,22 +29,28 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.getNumber
+import com.bharath.expensetracker.screens.graphscreen.ui.PercentageText
 import com.bharath.expensetracker.screens.homescreen.ui.components.CustomPagerHome
 import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
+import com.bharath.expensetracker.ui.theme.Lato_Regular
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,8 +89,8 @@ fun HomeScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        val sumOfExpenses=homeViewModel.expSumArr!!.collectAsState(initial = 0.0f)
-        val sumOfIncomes=homeViewModel.incomeSumArr!!.collectAsState(initial = 0.0f)
+        val sumOfExpenses=homeViewModel.expSumArr!!.collectAsState(initial = 0f)
+        val sumOfIncomes=homeViewModel.incomeSumArr!!.collectAsState(initial = 0f)
         val BalanceAmount= remember {
             mutableStateOf(0.0f)
         }
@@ -106,9 +113,9 @@ fun HomeScreen(
             ,
 //            contentAlignment = Alignment.Center
         ) {
-            if (homeViewModel.checkExpisEmpty().collectAsState(initial = 0).value !=0 && homeViewModel.checkIncisEmpty().collectAsState(initial = 0).value !=0){
+
             BalanceAmount.value=sumOfIncomes.value - sumOfExpenses.value
-            }
+
             IconButton(onClick = {
                 scope.launch { drawerState.open()}
 
@@ -130,20 +137,18 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.Top
                 ) {
                     Text(text = "CURRENT BALANCE")
-                    Text(text = "${BalanceAmount.value}", textAlign = TextAlign.Center, fontSize = 40.sp)
+                    Text(text = "₹ ${getNumber(BalanceAmount.value.toString())}", textAlign = TextAlign.Center, fontSize = 40.sp)
 
 
                 }
                 Spacer(modifier = Modifier.height(40.dp))
-                Box {
-                    Column {
+                Box(contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row {
                             Text(text = "INCOME", modifier = Modifier.fillMaxWidth(0.5f))
                             Text(text = "EXPENSE", modifier = Modifier.fillMaxWidth(0.5f))
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-
-                        if (homeViewModel.checkExpisEmpty().collectAsState(initial = 0).value !=0 && homeViewModel.checkIncisEmpty().collectAsState(initial = 0).value !=0) {
 
                             IncomeExpenseTxt(
                                 income =
@@ -151,6 +156,10 @@ fun HomeScreen(
                                 Expense =
                                 sumOfExpenses.value
                             )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        val percentage=(sumOfExpenses.value /sumOfIncomes.value)*100
+                        if (! percentage.isNaN()) {
+                           ShowPercentage(percentage = percentage)
                         }
                     }
                 }
@@ -185,15 +194,15 @@ fun HomeScreen(
 @Composable
 fun IncomeExpenseTxt(income: Float, Expense: Float) {
     Row {
-        Text(text = "$income", fontSize = 18.sp, modifier = Modifier
+        Text(text = "₹ ${getNumber(income.toString())}", fontSize = 18.sp, modifier = Modifier
             .fillMaxWidth(0.5f)
             .alpha(0.8f),
             maxLines = 1, fontFamily = Inter_Bold
         )
-        Text(text = "$Expense", fontSize = 18.sp, modifier = Modifier
+        Text(text = "₹ ${getNumber(Expense.toString())}", fontSize = 18.sp, modifier = Modifier
             .fillMaxWidth(0.5f)
             .alpha(0.8f)
-            , maxLines = 1, fontFamily = Inter_Bold
+            , maxLines = 1, fontFamily = Inter_Bold, overflow = TextOverflow.Ellipsis
         )
     }
 
@@ -204,4 +213,27 @@ fun IncomeExpenseTxt(income: Float, Expense: Float) {
 @Preview(showBackground = true)
 fun Preview() {
     HomeScreen()
+}
+
+
+@Composable
+private fun ShowPercentage(percentage:Float) {
+    var showtext by remember {
+        mutableStateOf(false)
+    }
+    Text(text = "Tap to show Income Analysis", modifier = Modifier
+        .clickable {
+            showtext = !showtext
+        }
+        .alpha(0.5f),
+        textAlign = TextAlign.Center,
+        fontSize = 11.sp,
+        fontFamily = Lato_Regular,
+        color = MaterialTheme.colorScheme.inverseSurface
+    )
+    if (showtext){
+        PercentageText(percentage = percentage)
+        
+        
+    }
 }

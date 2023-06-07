@@ -1,4 +1,4 @@
-package com.bharath.expensetracker.screens.addscreen
+package com.bharath.expensetracker.screens.addscreen.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AirplanemodeActive
+import androidx.compose.material.icons.filled.BikeScooter
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,7 +59,6 @@ import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -144,7 +148,9 @@ fun AddScreen(
                               Text(
                                   text = "Enter The Amount ",
                                   color = MaterialTheme.colorScheme.primary
-                              )
+
+                                  )
+
                 },
                 onValueChange = {
                     valueRupees = it
@@ -229,6 +235,13 @@ fun AddScreen(
                         "Electronics",
                         "Other"
                     )
+                    val iconList= listOf(
+                        Icons.Default.Fastfood,
+                        Icons.Default.Movie,
+                        Icons.Default.BikeScooter,
+                        Icons.Default.AirplanemodeActive,
+
+                    )
                     val incomeCat =
                         arrayOf("Salary", "Business profit", "Gifts", "CashBack", "Other")
                     if (isSelected) {
@@ -261,7 +274,7 @@ fun AddScreen(
                             }) {
                                 if (type == "Expense") {
 
-                                    expenseCat.forEach {
+                                    expenseCat.forEachIndexed {index ,it->
                                         DropdownMenuItem(text = {
                                             Text(
                                                 text = it,

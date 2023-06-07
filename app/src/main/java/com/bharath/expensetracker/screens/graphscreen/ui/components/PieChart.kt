@@ -8,13 +8,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,9 +31,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bharath.expensetracker.ui.theme.BalanceColorInPie
+import com.bharath.expensetracker.ui.theme.ExpenseColorInPie
 
 
 @Composable
@@ -47,11 +50,9 @@ fun PieChart(
         floatValue.add(index,360*values.toFloat() / totalSum.toFloat())
     }
     val colors= listOf(
-        Color.Blue,
-        Color.Magenta,
-        Color.Green,
-        Color.Red,
-        Color.Yellow
+       ExpenseColorInPie,
+        BalanceColorInPie
+
     )
     var animationPlayed by remember{ mutableStateOf(false) }
     var lastValue=0f
@@ -76,7 +77,7 @@ fun PieChart(
     LaunchedEffect(key1 = true ){
         animationPlayed=true
     }
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Box(
             modifier = Modifier.size(animateSize.dp),
@@ -97,8 +98,8 @@ fun PieChart(
                 }
             }
 
-            DetailsPiechart(data,colors)
         }
+            DetailsPiechart(data,colors)
 
     }
 
@@ -111,10 +112,12 @@ fun DetailsPiechart(data: Map<String, Int>, colors: List<Color>) {
 
     Column(modifier = Modifier
         .padding(top = 60.dp)
-        .fillMaxWidth()) {
+        .fillMaxWidth())
+    {
         data.values.forEachIndexed { index, value ->
             DetailsPieChartItem(data = Pair(data.keys.elementAt(index),value), color =colors[index] )
         }
+        Spacer(modifier = Modifier.height(20.dp))
     }
 
 }
@@ -135,18 +138,20 @@ fun DetailsPieChartItem(
             Box(modifier = Modifier
                 .background(color = color, shape = RoundedCornerShape(10.dp))
                 .size(height))
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = data.first,
                     modifier = Modifier.padding(start = 15.dp),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 22.sp
+                    fontSize = 22.sp,
+                    color= MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = data.second.toString(),
+                    text = "₹ ${getNumber( data.second.toString())}",
                     modifier = Modifier.padding(start = 15.dp),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 22.sp
+                    fontSize = 22.sp,
+                    color= MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -155,3 +160,22 @@ fun DetailsPieChartItem(
 
 }
 
+
+private fun getNumber(string: String):String {
+    var value = string
+
+    var separator = 3
+    var visit = 0
+    var number = ""
+    for (i in value.length - 1 downTo 0) {
+
+        visit += 1
+        number += value[i]
+        if (visit == separator && i != 0) {
+            number += ","
+            separator = 2
+            visit = 0
+        }
+    }
+    return number.reversed()
+}

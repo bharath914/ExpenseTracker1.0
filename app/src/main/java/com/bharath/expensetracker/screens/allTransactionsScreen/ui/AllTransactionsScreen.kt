@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +56,7 @@ fun AllTransactionsScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(MaterialTheme.colorScheme.primaryContainer)) {
-                    Row() {
+                    Row {
 
 
                         Text(
@@ -121,7 +120,7 @@ fun AllTransactionsScreen(
                     CustomList(list = atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value)
                 }
                 3->{
-                    RD_CustomList(list = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value)
+                    RD_CustomList(list = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value,atsViewModel)
                 }
             }
         
@@ -133,14 +132,23 @@ fun AllTransactionsScreen(
 }
 
 @Composable
-fun RD_CustomList(list: List<Transactions>){
+fun RD_CustomList(list: List<Transactions>,atsViewModel: ATSViewModel){
+    var show by remember {
+        mutableStateOf(false)
+    }
+    var transaction:Transactions = Transactions("",0f,"","","","")
     LazyColumn {
         items(list){
-            Rd_Card(detail = it)
+            Rd_Card(detail = it){
+
+
+
+            }
 
         }
 
     }
+
 }
 
 @Composable

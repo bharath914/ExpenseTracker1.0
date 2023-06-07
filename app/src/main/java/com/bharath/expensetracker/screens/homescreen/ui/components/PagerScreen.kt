@@ -108,11 +108,7 @@ fun CustomListScreen(
             fontSize = 20.sp
         )
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(if (list.value.size > 7){
-                list.value.subList(0,6)
-            }else {
-                list.value
-            }) { detail ->
+            items(list.value) { detail ->
                 CardHome(detail)
 
             }

@@ -1,6 +1,5 @@
 package com.bharath.expensetracker.data.repository
 
-import androidx.compose.runtime.MutableState
 import com.bharath.expensetracker.data.model.Transactions
 import kotlinx.coroutines.flow.Flow
 
@@ -14,4 +13,7 @@ interface RepositoryInterface {
     fun getFewCustomTransactions(typeSpend: String):Flow<List<Transactions>>
      fun getSumOfTransaction(type:String):Flow<Float>
      suspend fun checkIsEmpty(type: String):Flow<Int>
+     suspend fun getHighestPayment(type: String):Flow<Float>
+//     suspend fun getHighestPaymentDetail(float: Float):Flow<Transactions>
+
 }

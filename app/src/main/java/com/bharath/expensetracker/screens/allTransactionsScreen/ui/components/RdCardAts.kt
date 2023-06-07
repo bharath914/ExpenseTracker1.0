@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +52,13 @@ import com.bharath.expensetracker.ui.theme.Money2inc
 
 @Composable
 fun Rd_Card(detail: Transactions,
-            atsViewModel: ATSViewModel = hiltViewModel()) {
+            atsViewModel: ATSViewModel = hiltViewModel(),
+            onClickDelete : () -> Unit
+
+) {
+    var show by remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,7 +167,7 @@ fun Rd_Card(detail: Transactions,
                         }
                         DropdownMenu(expanded = expanded, onDismissRequest = { expanded=false }) {
                             DropdownMenuItem(text = { Text(text = "Delete",color= MaterialTheme.colorScheme.primary) }, onClick = {
-                              atsViewModel.deleteRd(detail)
+                             show=true
 
                                 expanded=false
                             }, trailingIcon = {
@@ -182,5 +189,29 @@ fun Rd_Card(detail: Transactions,
             }
         }
 
+    }
+    if (show){
+        AlertDialog(onDismissRequest = {show=false }, confirmButton = {
+            TextButton(onClick = {
+                atsViewModel.deleteRd(detail)
+               show =false
+
+            }){
+                Text(text = "Confirm")
+            }
+        },
+            dismissButton = {
+                TextButton(onClick = {show =false }) {
+                    Text(text = "Dismiss")
+                }
+            },
+            shape = MaterialTheme.shapes.large,
+            title = { Text(text = "Delete Permanently")},
+            text = { Text(text = "Are you Sure ,Once Deleted It can't be Reverted")}
+            , containerColor = MaterialTheme.colorScheme.primaryContainer,
+            textContentColor = MaterialTheme.colorScheme.inverseSurface,
+            titleContentColor = MaterialTheme.colorScheme.inverseSurface
+
+        )
     }
 }

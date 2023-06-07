@@ -72,14 +72,14 @@ fun AtsCard(
         }
         val brush = Brush.linearGradient(
             listOf(
+                Money2exp,
                 Money1exp,
-                Money2exp
             )
         )
         val brush2 = Brush.linearGradient(
             listOf(
+                Money2inc,
                 Money1inc,
-                Money2inc
             )
         )
 
