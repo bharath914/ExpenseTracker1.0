@@ -34,6 +34,9 @@ val Lato_LightItalic= FontFamily(
 val Lato_Bold = FontFamily(
     Font(R.font.lato_bold)
 )
+val Inter_ExtraLight = FontFamily(
+    Font(R.font.inter_extralight)
+)
 
 val Typography = Typography(
     bodyLarge = TextStyle(

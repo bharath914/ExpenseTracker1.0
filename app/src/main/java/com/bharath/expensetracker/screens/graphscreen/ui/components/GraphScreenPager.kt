@@ -1,5 +1,6 @@
 package com.bharath.expensetracker.screens.graphscreen.ui.components
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +26,7 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun CustomPagerGraph(
     list: List<Map<String, Transactions>>,
@@ -59,17 +60,18 @@ fun CustomPagerGraph(
 
         ) {
 
-            CustomListGraphScreen(
-                graphPagelist = pages[currentPage],
-                map = list[currentPage]
-            )
 
+            CustomListGraphScreen(
+                graphPagelist = pages[it],
+                map = list[it]
+            )
         }
 
 
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CustomListGraphScreen(
     graphPagelist: GraphPagelist,
@@ -85,10 +87,7 @@ private fun CustomListGraphScreen(
 
 
     val Lowest = map[graphPagelist.lowkey]
-    //    val transactionDetail =
-//        graphViewModel.getHighestTransactionDetail(finalTransaction.value).collectAsState(
-//            initial = transaction
-//        )
+
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -105,6 +104,7 @@ private fun CustomListGraphScreen(
         )
 
     }
+
 }
 
 @Composable

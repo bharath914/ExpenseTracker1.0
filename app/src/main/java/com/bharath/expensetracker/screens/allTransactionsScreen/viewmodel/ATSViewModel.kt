@@ -8,6 +8,7 @@ import com.bharath.expensetracker.data.repository.RepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,13 +17,23 @@ import javax.inject.Inject
 class ATSViewModel
 @Inject constructor(
     private val repository: RepositoryInterface,
-    private val rd_repository: Rd_REpo,
+    private val rd_repository: Rd_REpo
 ) : ViewModel() {
 
     var allExpenses: Flow<List<Transactions>> = emptyFlow()
+        private set
     var allIncomes: Flow<List<Transactions>> = emptyFlow()
+        private set
     var allPays: Flow<List<Transactions>> = emptyFlow()
+        private set
     var RdAllPays: Flow<List<Transactions>> = emptyFlow()
+        private set
+
+
+    var list:List<Transactions> = emptyList()
+
+
+
 
     private val job = viewModelScope.launch(Dispatchers.IO) {
         allPays = repository.getTransactions()
@@ -31,7 +42,11 @@ class ATSViewModel
     init {
 
         job.start()
-
+        viewModelScope.launch(Dispatchers.IO){
+             allPays.collectLatest {
+                list=it
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             allExpenses = repository.getCustomTransactions("Expense")
         }
@@ -43,7 +58,10 @@ class ATSViewModel
         }
     }
 
-    fun getAllExpensesAts(): Flow<List<Transactions>> {
+
+    fun getAllExpensesAts(): Flow<List<Transactions>>
+    {
+
 
         return allExpenses
     }

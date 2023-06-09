@@ -1,6 +1,7 @@
 package com.bharath.expensetracker.screens.homescreen.ui
 
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,18 +54,19 @@ import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Lato_Regular
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    Surface(color = MaterialTheme.colorScheme.background) {
+
+    Surface(color = MaterialTheme.colorScheme.surface) {
 
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope= rememberCoroutineScope()
-        val list= listOf("Profile","Settings","FeedBack","Rate us on PlayStore")
+        val scope = rememberCoroutineScope()
+        val list = listOf("Profile", "Settings", "FeedBack", "Rate us on PlayStore")
 
-        val selectedItem= remember {
+        val selectedItem = remember {
             mutableStateOf(list[0])
         }
         ModalNavigationDrawer(
@@ -72,12 +74,13 @@ fun HomeScreen(
             drawerContent = {
                 ModalDrawerSheet {
                     Spacer(modifier = Modifier.height(15.dp))
-                    list.forEach {item->
+                    list.forEach { item ->
                         NavigationDrawerItem(
                             label = { Text(text = item) },
                             selected = item == selectedItem.value,
-                            onClick = { scope.launch { drawerState.close() }
-                                selectedItem.value=item
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                                selectedItem.value = item
                             },
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
@@ -85,124 +88,135 @@ fun HomeScreen(
                     }
                 }
             }
-        ){
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val sumOfExpenses=homeViewModel.expSumArr!!.collectAsState(initial = 0f)
-        val sumOfIncomes=homeViewModel.incomeSumArr!!.collectAsState(initial = 0f)
-        val BalanceAmount= remember {
-            mutableStateOf(0.0f)
-        }
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(4f)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-
-                )
-              
-            ,
-//            contentAlignment = Alignment.Center
         ) {
-
-            BalanceAmount.value=sumOfIncomes.value - sumOfExpenses.value
-
-            IconButton(onClick = {
-                scope.launch { drawerState.open()}
-
-
-            },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(start = 5.dp)
-                    .scale(1.4f)
-            ){
-                Icon(imageVector=Icons.Default.Menu , contentDescription ="Open Menu" )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(40.dp))
-
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Text(text = "CURRENT BALANCE")
-                    Text(text = "₹ ${getNumber(BalanceAmount.value.toString())}", textAlign = TextAlign.Center, fontSize = 40.sp)
-
-
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val sumOfExpenses = homeViewModel.expSumArr!!.collectAsState(initial = 0f)
+                val sumOfIncomes = homeViewModel.incomeSumArr!!.collectAsState(initial = 0f)
+                val BalanceAmount = remember {
+                    mutableStateOf(0.0f)
                 }
-                Spacer(modifier = Modifier.height(40.dp))
-                Box(contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row {
-                            Text(text = "INCOME", modifier = Modifier.fillMaxWidth(0.5f))
-                            Text(text = "EXPENSE", modifier = Modifier.fillMaxWidth(0.5f))
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
 
-                            IncomeExpenseTxt(
-                                income =
-                                sumOfIncomes.value,
-                                Expense =
-                                sumOfExpenses.value
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(4f)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.onPrimary
+                                )
                             )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        val percentage=(sumOfExpenses.value /sumOfIncomes.value)*100
-                        if (! percentage.isNaN()) {
-                           ShowPercentage(percentage = percentage)
+
+                        ),
+//            contentAlignment = Alignment.Center
+                ) {
+
+                    BalanceAmount.value = sumOfIncomes.value - sumOfExpenses.value
+
+                    IconButton(
+                        onClick = {
+                            scope.launch { drawerState.open() }
+
+
+                        },
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(start = 5.dp)
+                            .scale(1.4f)
+                    ) {
+                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Menu")
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Text(text = "CURRENT BALANCE")
+                            Text(
+                                text = "₹ ${getNumber(BalanceAmount.value.toString())}",
+                                textAlign = TextAlign.Center,
+                                fontSize = 40.sp
+                            )
+
+
+                        }
+                        Spacer(modifier = Modifier.height(40.dp))
+                        Box(contentAlignment = Alignment.Center) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Row {
+                                    Text(text = "INCOME", modifier = Modifier.fillMaxWidth(0.5f))
+                                    Text(text = "EXPENSE", modifier = Modifier.fillMaxWidth(0.5f))
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                IncomeExpenseTxt(
+                                    income =
+                                    sumOfIncomes.value,
+                                    Expense =
+                                    sumOfExpenses.value
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                val percentage = (sumOfExpenses.value / sumOfIncomes.value) * 100
+                                if (!percentage.isNaN()) {
+                                    ShowPercentage(percentage = percentage)
+                                }
+                            }
                         }
                     }
                 }
+
+
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(5f)
+                ) {
+
+
+                    CustomPagerHome()
+
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+
+
+                }
+
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(5f)
-        ) {
-            
-
-
-
-
-            CustomPagerHome()
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-
-
-        }
-
-    }
-    }
     }
 }
 
 @Composable
 fun IncomeExpenseTxt(income: Float, Expense: Float) {
     Row {
-        Text(text = "₹ ${getNumber(income.toString())}", fontSize = 18.sp, modifier = Modifier
-            .fillMaxWidth(0.5f)
-            .alpha(0.8f),
+        Text(
+            text = "₹ ${getNumber(income.toString())}", fontSize = 18.sp, modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .alpha(0.8f),
             maxLines = 1, fontFamily = Inter_Bold
         )
-        Text(text = "₹ ${getNumber(Expense.toString())}", fontSize = 18.sp, modifier = Modifier
-            .fillMaxWidth(0.5f)
-            .alpha(0.8f)
-            , maxLines = 1, fontFamily = Inter_Bold, overflow = TextOverflow.Ellipsis
+        Text(
+            text = "₹ ${getNumber(Expense.toString())}",
+            fontSize = 18.sp,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .alpha(0.8f),
+            maxLines = 1,
+            fontFamily = Inter_Bold,
+            overflow = TextOverflow.Ellipsis
         )
     }
 
@@ -217,7 +231,7 @@ fun Preview() {
 
 
 @Composable
-private fun ShowPercentage(percentage:Float) {
+private fun ShowPercentage(percentage: Float) {
     var showtext by remember {
         mutableStateOf(false)
     }
@@ -231,9 +245,9 @@ private fun ShowPercentage(percentage:Float) {
         fontFamily = Lato_Regular,
         color = MaterialTheme.colorScheme.inverseSurface
     )
-    if (showtext){
+    if (showtext) {
         PercentageText(percentage = percentage)
-        
-        
+
+
     }
 }

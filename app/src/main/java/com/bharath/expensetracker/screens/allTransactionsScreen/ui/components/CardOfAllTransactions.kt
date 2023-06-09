@@ -1,5 +1,6 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.bharath.expensetracker.data.model.Transactions
+import com.bharath.expensetracker.screens.allTransactionsScreen.ui.SetUpNavGraph
 import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.bharath.expensetracker.ui.theme.Lato_Bold
@@ -54,10 +57,16 @@ import com.bharath.expensetracker.ui.theme.Money2inc
 fun AtsCard(
     detail: Transactions,
     atsViewModel: ATSViewModel = hiltViewModel(),
-) {
+    modifier: Modifier,
 
+    ) {
+    var edit by remember {
+        mutableStateOf(false)
+    }
+
+    val navController = rememberNavController()
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
             .padding(10.dp),
@@ -65,10 +74,10 @@ fun AtsCard(
             containerColor = MaterialTheme.colorScheme.background
         )
 
-    ){
-        var color=Color.Black
-        if (isSystemInDarkTheme()){
-            color=Color.White
+    ) {
+        var color = Color.Black
+        if (isSystemInDarkTheme()) {
+            color = Color.White
         }
         val brush = Brush.linearGradient(
             listOf(
@@ -84,118 +93,150 @@ fun AtsCard(
         )
 
 
-        var amountColor=brush2
-        if (detail.type=="Expense"){
+        var amountColor = brush2
+        if (detail.type == "Expense") {
 
-            amountColor=brush
+            amountColor = brush
         }
-        var expanded by remember{
+        var expanded by remember {
             mutableStateOf(false)
         }
 
-    Row(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxSize()) {
 
-        Box(modifier = Modifier
-            .weight(3f)
-            .fillMaxSize()
-            ){
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    text = detail.descriptionOfPayment ,
-                    maxLines = 1,
-
-                    modifier = Modifier.padding(start = 10.dp, top = 8.dp)
-                , color =color,
-                    fontFamily = Inter_SemiBold,
-                    fontSize = 16.sp
-                )
-                Row(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxSize()
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
                     Text(
-                        text = detail.category,
-                        modifier = Modifier
-                            .padding(start = 10.dp, top = 2.dp)
-                            .weight(2.5f)
-                            .alpha(0.7f)
-                        ,
-                        color=color,
-                        fontFamily = Lato_Regular,
-                        fontSize = 14.sp,
-                        maxLines = 1
-                    )
-                    Text(
-                        text = detail.date ,
-                        modifier = Modifier
-                            .weight(3f)
-                            .padding(start = 10.dp, top = 5.dp)
-                            .align(CenterVertically)
-                            .alpha(0.7f),
-                        fontFamily =    Lato_Regular,
-                        color=color,
-                        fontSize = 12.sp,
-                        maxLines = 1
-
-                        )
-                }
-                
-            }
-        }
-        Box(modifier = Modifier.weight(2f)){
-
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
-                    Spacer(modifier = Modifier.width(15.dp))
-                    Text(
-                        text ="₹${ getNumber(detail.amount.toString())}",
-                        fontFamily = Lato_Bold,
-                        fontSize = 17.sp,
-                        modifier = Modifier
-                            .weight(4f)
-                            .background(brush = amountColor)
-                        ,
+                        text = detail.descriptionOfPayment,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    , softWrap = true,
+
+                        modifier = Modifier.padding(start = 10.dp, top = 8.dp), color = color,
+                        fontFamily = Inter_SemiBold,
+                        fontSize = 16.sp
+                    )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = detail.category,
+                            modifier = Modifier
+                                .padding(start = 10.dp, top = 2.dp)
+                                .weight(2.5f)
+                                .alpha(0.7f),
+                            color = color,
+                            fontFamily = Lato_Regular,
+                            fontSize = 14.sp,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = detail.date,
+                            modifier = Modifier
+                                .weight(3f)
+                                .padding(start = 10.dp, top = 5.dp)
+                                .align(CenterVertically)
+                                .alpha(0.7f),
+                            fontFamily = Lato_Regular,
+                            color = color,
+                            fontSize = 12.sp,
+                            maxLines = 1
 
                         )
-                    IconButton(onClick = {expanded=true  }, modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 5.dp)) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "")
                     }
-                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded=false }) {
-                        DropdownMenuItem(text = { Text(text = "Delete",color=MaterialTheme.colorScheme.primary)}, onClick = {
-                            atsViewModel.deleteTransaction(detail)
 
-                            expanded=false
-                        }, trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Delete, contentDescription ="Delete", tint = MaterialTheme.colorScheme.primary )
-                        })
-                        DropdownMenuItem(text = { Text(text = "Edit", color = MaterialTheme.colorScheme.primary)}, onClick = { }
-                        , trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
-                            })
-                    }
-                    
                 }
             }
+            Box(modifier = Modifier.weight(2f)) {
 
-        }
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Text(
+                            text = "₹${getNumber(detail.amount.toString())}",
+                            fontFamily = Lato_Bold,
+                            fontSize = 17.sp,
+                            modifier = Modifier
+                                .weight(4f)
+                                .background(brush = amountColor),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = true,
+
+                            )
+                        IconButton(
+                            onClick = { expanded = true }, modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 5.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "")
+                        }
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            DropdownMenuItem(text = {
+                                Text(
+                                    text = "Delete",
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }, onClick = {
+                                atsViewModel.deleteTransaction(detail)
+
+                                expanded = false
+                            }, trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = "Delete",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            })
+                            DropdownMenuItem(text = {
+                                Text(
+                                    text = "Edit",
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            },
+                                onClick = {
+                                    edit = !edit
+
+                                }, trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = "Edit",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                })
+                        }
+
+                    }
+                }
+
+            }
         }
 
     }
+    AnimatedVisibility(visible = edit) {
+
+
+        SetUpNavGraph(navController, detail)
+
+        navController.navigate("Edit_Screen")
+
     }
-    
-    
-    
+}
 
 
 @Preview
 @Composable
 private fun PreviewFun() {
-   AtsCard(detail = Transactions("Bought Samsung s23Ultra",125000f,"Expense","Electronics","4:30","12-2-2024"))
+//   AtsCard(detail = Transactions("Bought Samsung s23Ultra",125000f,"Expense","Electronics","4:30","12-2-2024"),{
+//       Unit
+//   })
 }
-fun getNumber(string: String):String {
-    var value = string.substring(0,string.indexOf('.'))
+
+fun getNumber(string: String): String {
+    var value = string.substring(0, string.indexOf('.'))
 
     var separator = 3
     var visit = 0
@@ -210,5 +251,5 @@ fun getNumber(string: String):String {
             visit = 0
         }
     }
-    return number.reversed()+string.substring(string.indexOf('.'),string.length)
+    return number.reversed() + string.substring(string.indexOf('.'), string.length)
 }

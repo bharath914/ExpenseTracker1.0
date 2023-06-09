@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -115,7 +114,7 @@ fun GraphScreen(
                     .wrapContentHeight(), contentAlignment = Center
             ) {
                 val percentage = (expense / income) * 100
-                if (!percentage.isNaN()) {
+                androidx.compose.animation.AnimatedVisibility(!percentage.isNaN()) {
                     PercentageText(percentage = percentage)
 
                 }
@@ -130,36 +129,37 @@ fun GraphScreen(
                     .padding(bottom = 70.dp), contentAlignment = Center
             ) {
 
-
-                if (graphViewModel.isLoadedRangeHigh.value && graphViewModel.isLoadedRangeLow.value
-
-                ) {
+                var visibility by remember {
+                    mutableStateOf(false)
+                }
+                visibility =
+                    graphViewModel.isLoadedRangeHigh.value && graphViewModel.isLoadedRangeLow.value
+                androidx.compose.animation.AnimatedVisibility(visible = visibility)
+                {
                     if (
                         graphViewModel.LowestTransaction.isNotEmpty()
                         && graphViewModel.highestTransactionExp.isNotEmpty()
-                    ){
-                    val highest = graphViewModel.getHighestTransaction("")[0]
-                    val lowest = graphViewModel.getLowestTransaction("Income")[0]
-
-
-                    val list = listOf(
-                        highest,
-                        lowest
-                    )
-//
-           
-                    Column(
-                        horizontalAlignment = CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
                     ) {
+                        val highest = graphViewModel.getHighestTransaction("")[0]
+                        val lowest = graphViewModel.getLowestTransaction("Income")[0]
+
+
+                        val list = listOf(
+                            highest,
+                            lowest
+                        )
+//
+
+                        Column(
+                            horizontalAlignment = CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
 //                   CardHome(detail = highest)
 //                      CardHome(detail = lowest)
 //
-                        CustomPagerGrap(list)
+                            CustomPagerGrap(list)
+                        }
                     }
-                    }
-                } else {
-                    CircularProgressIndicator()
                 }
 
 
@@ -211,10 +211,11 @@ fun CustomGraphCardLayout(
     graphPagelist: GraphPagelist,
     t: Transactions,
 ) {
+
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceEvenly
-        ) {
+    ) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -226,7 +227,7 @@ fun CustomGraphCardLayout(
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(20.dp))
-        CardHome(detail = t)
+        CardHome(detail = t, modifier = Modifier)
     }
 
 }

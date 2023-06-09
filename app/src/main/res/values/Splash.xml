@@ -5,7 +5,7 @@
 <!--        <item name="android:enterFadeDuration">300</item>-->
 <!--        <item name="android:exitFadeDuration">400</item>-->
         <item name="windowSplashScreenAnimationDuration">800</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/expenselogo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/expcorrectlogo</item>
         <item name="postSplashScreenTheme"> @style/Theme.ExpenseTracker</item>
     </style>
 </resources>

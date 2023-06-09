@@ -1,21 +1,18 @@
-package com.bharath.expensetracker.ui.theme.onboarding.di
+package com.bharath.expensetracker.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
 import com.bharath.expensetracker.common.Cons
-import com.bharath.expensetracker.data.dao.DaoDb
 import com.bharath.expensetracker.data.database.DataBase
 import com.bharath.expensetracker.data.deleted.RDDataBase
 import com.bharath.expensetracker.data.deleted.Rd_REpo
 import com.bharath.expensetracker.data.deleted.Rd_RepoImpl
 import com.bharath.expensetracker.data.repository.Repository
 import com.bharath.expensetracker.data.repository.RepositoryInterface
-import com.bharath.expensetracker.ui.theme.onboarding.data.DataStoreRepository
+import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -23,9 +20,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule{
-    @Provides
-    @Singleton
-    fun provideDataStoreRepo(@ApplicationContext context:Context)= DataStoreRepository(context)
 
     @Provides
     @Singleton
@@ -56,4 +50,7 @@ object DataBaseModule{
     @Provides
     fun provideRdRepository(R_db:RDDataBase):Rd_REpo =Rd_RepoImpl(R_db.daoRd)
 
+    @Singleton
+    @Provides
+    fun provideHomeViewModel(repositoryInterface: RepositoryInterface):HomeViewModel = HomeViewModel(repositoryInterface)
 }

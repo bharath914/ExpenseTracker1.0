@@ -1,5 +1,6 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -53,14 +54,15 @@ import com.bharath.expensetracker.ui.theme.Money2inc
 @Composable
 fun Rd_Card(detail: Transactions,
             atsViewModel: ATSViewModel = hiltViewModel(),
-            onClickDelete : () -> Unit
+
+            modifier: Modifier
 
 ) {
     var show by remember {
         mutableStateOf(false)
     }
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
             .padding(10.dp),
@@ -190,7 +192,7 @@ fun Rd_Card(detail: Transactions,
         }
 
     }
-    if (show){
+    AnimatedVisibility (visible = show){
         AlertDialog(onDismissRequest = {show=false }, confirmButton = {
             TextButton(onClick = {
                 atsViewModel.deleteRd(detail)

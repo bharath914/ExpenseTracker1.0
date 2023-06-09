@@ -1,5 +1,6 @@
 package com.bharath.expensetracker.screens.addscreen.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.filled.AirplanemodeActive
 import androidx.compose.material.icons.filled.BikeScooter
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -25,7 +25,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -40,15 +39,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
-import com.bharath.expensetracker.ui.theme.Inter_Bold
-import com.bharath.expensetracker.ui.theme.Inter_Regular
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -242,9 +235,11 @@ fun AddScreen(
                         Icons.Default.AirplanemodeActive,
 
                     )
-                    val incomeCat =
-                        arrayOf("Salary", "Business profit", "Gifts", "CashBack", "Other")
-                    if (isSelected) {
+                    val incomeCat = arrayOf("Salary", "Business profit", "Gifts", "CashBack", "Other")
+//                    if (isSelected) {
+                    AnimatedVisibility(visible = isSelected) {
+
+
                         ExposedDropdownMenuBox(expanded = isExpanded2, onExpandedChange = {
                             isExpanded2 = it
                         }) {
@@ -306,7 +301,14 @@ fun AddScreen(
 
 
                     }
-                    if (isSelected) {
+//                    if (isSelected) {
+                       AnimatedVisibility(visible = isSelected) {
+
+                           Column(
+                               modifier = Modifier.fillMaxWidth(),
+                               horizontalAlignment = Alignment.CenterHorizontally,
+                               verticalArrangement = Arrangement.Center
+                           ){
                         CalendarDialog(
                             state = calendarState,
                             config = CalendarConfig(
@@ -346,6 +348,7 @@ fun AddScreen(
 
                     }
                 }
+                }
             }
             Spacer(modifier = Modifier.height(35.dp))
             OutlinedButton(onClick = {
@@ -374,55 +377,4 @@ fun AddScreen(
 
 }
 
-@Composable
-fun OnclickSaver(
-     descriptionOfPayment:String,
-     amount : String,
-     type:String,
-    category:String,
-     time:String,
-    date:String,
-) {
 
-   val viewModelT: AddToDBViewModel = hiltViewModel()
-
-    if (descriptionOfPayment !="" && amount !="" && type !="" &&category!=""){
-         val transactionDetail=Transactions(descriptionOfPayment = descriptionOfPayment,amount = amount.toFloat(), type =type , category = category, time =time , date =date )
-
-        viewModelT.saveToDb(transactionDetail)
-
-    }
-
-    else{
-        CustomDialog(true)
-    }
-}
-
-@Composable
-fun CustomDialog(bool:Boolean) {
-    var openDialog by remember{ mutableStateOf(bool) }
-    if (openDialog){
-
-        AlertDialog(
-            onDismissRequest = {
-                openDialog=false
-            },
-            title = { Text(text = "Invalid Details", textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary, fontFamily = Inter_Bold, fontSize = 20.sp, modifier = Modifier.fillMaxWidth())},
-            text = { Text(text = "Please Enter All the Details and then tap on the 'tap to save' button",textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.secondary, fontFamily = Inter_Regular, fontSize = 16.sp)},
-            dismissButton = {
-            TextButton(onClick = { openDialog=false }) {
-                                        
-                Text(text = "Dismiss", color = MaterialTheme.colorScheme.secondary)
-            }
-
-            },
-            confirmButton = {}
-
-        )
-
-
-
-
-
-    }
-}

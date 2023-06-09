@@ -77,6 +77,7 @@ fun PieChart(
     LaunchedEffect(key1 = true ){
         animationPlayed=true
     }
+
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Box(
