@@ -11,10 +11,11 @@ interface RepositoryInterface {
      fun getTransactions():Flow<List<Transactions>>
      fun getCustomTransactions(type:String):Flow<List<Transactions>>
     fun getFewCustomTransactions(typeSpend: String):Flow<List<Transactions>>
-     fun getSumOfTransaction(type:String):Flow<Float>
+     fun getSumOfTransaction(type:String,currentMonth:String):Flow<Float>
      suspend fun checkIsEmpty(type: String):Flow<Int>
      suspend fun getHighestPayment(type: String):List<Transactions>
      suspend fun getLowestPayment(type: String):List<Transactions>
+     suspend fun getCategorySum(category:String,month:String,type: String):Float
 //     suspend fun getHighestPaymentDetail(float: Float):Flow<Transactions>
 
 }

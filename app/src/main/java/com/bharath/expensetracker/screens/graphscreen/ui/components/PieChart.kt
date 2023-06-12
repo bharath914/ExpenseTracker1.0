@@ -1,6 +1,6 @@
 package com.bharath.expensetracker.screens.graphscreen.ui.components
 
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -29,12 +29,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bharath.expensetracker.ui.theme.BalanceColorInPie
 import com.bharath.expensetracker.ui.theme.ExpenseColorInPie
+import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 
 
 @Composable
@@ -42,7 +42,7 @@ fun PieChart(
     data:Map<String,Int>,
     radiusOuter:Dp =90.dp,
     chartBarWidth:Dp=20.dp,
-    animDuration:Int =1000,
+    animDuration:Int =600,
 ) {
     val totalSum =data.values.sum()
     val floatValue = mutableListOf<Float>()
@@ -61,7 +61,7 @@ fun PieChart(
         animationSpec = tween(
             durationMillis = animDuration,
             delayMillis = 0,
-            easing = LinearOutSlowInEasing
+            easing = EaseIn
         )
 
         )
@@ -71,7 +71,7 @@ fun PieChart(
         animationSpec = tween(
             durationMillis = animDuration,
             delayMillis = 0,
-            easing = LinearOutSlowInEasing
+            easing = EaseIn
         )
     )
     LaunchedEffect(key1 = true ){
@@ -94,6 +94,7 @@ fun PieChart(
                         value,
                         useCenter = false,
                         style = Stroke(chartBarWidth.toPx(), cap = StrokeCap.Butt)
+
                     )
                     lastValue +=value
                 }
@@ -143,14 +144,14 @@ fun DetailsPieChartItem(
                 Text(
                     text = data.first,
                     modifier = Modifier.padding(start = 15.dp),
-                    fontWeight = FontWeight.Medium,
+                    fontFamily = Inter_SemiBold,
                     fontSize = 22.sp,
                     color= MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = "₹ ${getNumber( data.second.toString())}",
                     modifier = Modifier.padding(start = 15.dp),
-                    fontWeight = FontWeight.Medium,
+                    fontFamily = Inter_SemiBold,
                     fontSize = 22.sp,
                     color= MaterialTheme.colorScheme.primary
                 )

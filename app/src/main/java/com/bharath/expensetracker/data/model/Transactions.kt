@@ -13,5 +13,7 @@ data class Transactions(
     @ColumnInfo(DbConst.category) val category: String,
     @ColumnInfo(DbConst.time) val time: String,
     @ColumnInfo(DbConst.date) val date: String,
+    @ColumnInfo(DbConst.month) val month: String,
+    @ColumnInfo(DbConst.year) val year: String,
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
 )

@@ -1,11 +1,10 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,7 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,33 +44,42 @@ import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.Rd
 import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.uielements.NothingHere
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @Composable
 @Preview
 fun AllTransactionsScreen(
-  atsViewModel: ATSViewModel = hiltViewModel(),
+    atsViewModel: ATSViewModel = hiltViewModel(),
 ) {
     Surface(color = MaterialTheme.colorScheme.background) {
 
-        var tabIndex by remember{ mutableStateOf(0) }
-
-        val tabs= listOf(
-            "All"
-        , "Expenses",
-        "Income",
+        var tabIndex by remember { mutableStateOf(0) }
+        var tabselected by remember { mutableStateOf(false) }
+        val pagerState = rememberPagerState()
+        val coroutineScope= rememberCoroutineScope()
+        val tabs = listOf(
+            "All", "Expenses",
+            "Income",
             "Recently Deleted"
         )
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 70.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 70.dp)
+        ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(MaterialTheme.colorScheme.primaryContainer)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                ) {
                     Row {
 
 
@@ -88,180 +98,178 @@ fun AllTransactionsScreen(
 
                     }
                 }
-            
-           ScrollableTabRow(
 
-                selectedTabIndex = tabIndex,
-               modifier= Modifier.fillMaxWidth(),
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-               edgePadding = 10.dp,
+                ScrollableTabRow(
 
-            ) {
+                    selectedTabIndex = tabIndex,
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    edgePadding = 10.dp,
 
-                tabs.forEachIndexed {tabindex, tab ->
-                    Tab(
-                        selected = tabIndex ==tabindex,
-                        onClick = {
 
-                                  tabIndex=tabindex
-                                  },
+                    ) {
 
-                    text = {
-                        Text(
-                            text = tab,
-                            fontSize = 15.sp,
-                            fontFamily = Inter_Bold ,
-                            modifier = Modifier.alpha(0.7f)
-                            )
-                           },
-                        selectedContentColor = MaterialTheme.colorScheme.primary
-            ,  unselectedContentColor = MaterialTheme.colorScheme.inverseSurface
-                    )
+                    tabs.forEachIndexed { tabindex, tab ->
+                        Tab(
+                            selected = tabIndex == tabindex,
+                            onClick = {
 
+
+
+                                    tabIndex = tabindex
+                                coroutineScope.launch {
+                                    pagerState.scrollToPage(tabIndex)
+
+                                }
+
+
+                            },
+
+                            text = {
+                                Text(
+                                    text = tab,
+                                    fontSize = 15.sp,
+                                    fontFamily = Inter_Bold,
+                                    modifier = Modifier.alpha(0.7f)
+                                )
+                            },
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.inverseSurface
+                        )
+
+                    }
                 }
-            }
-//                HorizontalPager(count = 4,
-//                    modifier = Modifier.fillMaxSize()
-//                    , state = pagerState,
-//                    userScrollEnabled = true,
-//                    verticalAlignment = Alignment.Top
-//                )
-//                {
-//
-//                    when(pagerState.currentPage){
-//                        0 -> {
-//
-//                            CustomList(list =atsViewModel.allPays .collectAsState(initial = emptyList()).value )
-//                            tabIndex =0
-//                        }
-//                        1 ->{
-//                            CustomList(list = atsViewModel.getAllExpensesAts() .collectAsState(initial = emptyList()).value)
-//                            tabIndex =1
-//                        }
-//                        2->{
-//                            CustomList(list = atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value)
-//                            tabIndex =2
-//                        }
-//                        3->{
-//                            RD_CustomList(list = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value,atsViewModel)
-//                            tabIndex =3
-//                        }
-//                    }
-//
-//
-//                }
+
+
+
                 var isLoading by remember {
 
 
-                mutableStateOf(false)
+                    mutableStateOf(false)
                 }
 
-//                AnimatedVisibility(visible = isLoading) {
-//                    LinearProgressIndicator()
-//                }
+
+                val list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
+                val list2 =
+                    atsViewModel.getAllExpensesAts().collectAsState(initial = emptyList()).value
+                val list3 =
+                    atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
+                val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
+                isLoading = true
 
 
-                val list1=atsViewModel.allPays.collectAsState(initial = emptyList()).value
-                val list2=atsViewModel.getAllExpensesAts() .collectAsState(initial = emptyList()).value
-                val list3=atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
-                val list4=atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
-                isLoading =true
+                HorizontalPager(
+                    count = 4,
+                    modifier = Modifier.fillMaxSize(), state = pagerState,
 
-                AnimatedContent(
-                    targetState = tabIndex,
-                    transitionSpec = {
-                        slideIntoContainer(
-                            animationSpec = tween(350, easing = EaseOut),
-                            towards = AnimatedContentScope.SlideDirection.Down
-                        ).with( slideOutOfContainer(
-                            animationSpec = tween(350, easing = EaseOut),
-                            towards= AnimatedContentScope.SlideDirection.Down
-                        ))
-                    }
+                    verticalAlignment = Alignment.Top
                 )
+                {
 
-                { target->
+
+                    AnimatedContent(
+                        targetState = pagerState.currentPage,
+                        transitionSpec = {
+                            slideInVertically() with fadeOut()
 
 
-            when(target){
-                0 -> {
+                        }
 
-                    CustomList(list = list1)
-                }
-                1 ->{
-                    CustomList(list =list2 )
+                    )
 
-                }
-                2->{
-                    CustomList(list =list3 )
-                }
-                3->{
-                    RD_CustomList(list = list4)
+                    {
+
+
+                        when (currentPage) {
+                            0 -> {
+                                CustomList(list = list1)
+                                tabIndex = currentPage
+
+                            }
+
+                            1 -> {
+                                CustomList(list = list2)
+                                tabIndex = currentPage
+                            }
+
+                            2 -> {
+                                CustomList(list = list3)
+                                tabIndex = currentPage
+                            }
+
+                            3 -> {
+                                RD_CustomList(list = list4)
+                                tabIndex = currentPage
+                            }
+                        }
+
+                    }
                 }
             }
-                    }
 
         }
-        }
-
-
     }
 }
 
 @Composable
-fun RD_CustomList(list: List<Transactions>){
-    if (list.isEmpty()){
+fun RD_CustomList(list: List<Transactions>) {
+    if (list.isEmpty()) {
         AnimatedVisibility(visible = true) {
 
             NothingHere()
         }
-    }
-    else{
+    } else {
 
 
-    LazyColumn {
-        items(list){
+        LazyColumn {
+            items(list) {
 
-            val modifier =Modifier
-            Rd_Card(detail = it,modifier=modifier)
+                val modifier = Modifier
+                Rd_Card(detail = it, modifier = modifier)
+
+            }
 
         }
-
-    }
     }
 
 }
 
 @Composable
 fun CustomList(list: List<Transactions>) {
-    if (list.isEmpty()){
-        AnimatedVisibility(visible = true) {
 
-        NothingHere()
-        }
-    }
-    else{
-
-
-    LazyColumn {
-        items(list){
-//
-            val modifier=Modifier
-            AtsCard(detail = it,modifier=modifier)
-
-        }
-
-    }
-    }
+    LazyListPay(list)
 
 }
+
 @Composable
-fun SetUpNavGraph(navHostController: NavHostController, t:Transactions) {
+fun LazyListPay(list: List<Transactions>) {
+    if (list.isEmpty()) {
+        AnimatedVisibility(visible = true) {
+
+            NothingHere()
+        }
+    } else {
+
+
+        LazyColumn {
+            items(list) {
+//
+                val modifier = Modifier
+                AtsCard(detail = it, modifier = modifier)
+
+            }
+
+        }
+    }
+}
+
+@Composable
+fun SetUpNavGraph(navHostController: NavHostController, t: Transactions) {
     NavHost(navController = navHostController,
         startDestination = "Edit_Screen",
         builder = {
-            composable("Edit_Screen"){
+            composable("Edit_Screen") {
                 EditScreenAts(t = t)
             }
-    } )
+        })
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +23,7 @@ class HomeViewModel @Inject constructor(
     var incomeList: Flow<List<Transactions>> = emptyFlow()
     var incomeSumArr: Flow<Float>? = emptyFlow()
     var expSumArr: Flow<Float>? = emptyFlow()
+    var currentMonth ="${LocalDate.now().month}"
     private var allTransactions: Flow<List<Transactions>> = emptyFlow()
     var isLoadingWhileFetching: MutableState<Boolean> = mutableStateOf(true)
 
@@ -33,11 +35,11 @@ class HomeViewModel @Inject constructor(
             incomeList = repository.getFewCustomTransactions("Income")
         }
         viewModelScope.launch(Dispatchers.Default) {
-            incomeSumArr = repository.getSumOfTransaction("Income")
+            incomeSumArr = repository.getSumOfTransaction("Income",currentMonth)
 
         }
         viewModelScope.launch(Dispatchers.Default) {
-            expSumArr = repository.getSumOfTransaction("Expense")
+            expSumArr = repository.getSumOfTransaction("Expense",currentMonth)
         }
         isLoadingWhileFetching.value = false
 
@@ -65,8 +67,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getUpdtSums() {
-        expSumArr = repository.getSumOfTransaction("Expense")
-        incomeSumArr = repository.getSumOfTransaction("Income")
+        expSumArr = repository.getSumOfTransaction("Expense",currentMonth)
+        incomeSumArr = repository.getSumOfTransaction("Income",currentMonth)
     }
 
     fun checkExpisEmpty(): Flow<Int> {

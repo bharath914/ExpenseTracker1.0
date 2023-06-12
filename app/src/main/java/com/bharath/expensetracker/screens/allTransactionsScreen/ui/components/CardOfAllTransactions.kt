@@ -1,7 +1,10 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +56,7 @@ import com.bharath.expensetracker.ui.theme.Money2exp
 import com.bharath.expensetracker.ui.theme.Money2inc
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AtsCard(
     detail: Transactions,
@@ -114,7 +118,7 @@ fun AtsCard(
                         text = detail.descriptionOfPayment,
                         maxLines = 1,
 
-                        modifier = Modifier.padding(start = 10.dp, top = 8.dp), color = color,
+                        modifier = Modifier.padding(start = 10.dp, top = 8.dp).basicMarquee(), color = color,
                         fontFamily = Inter_SemiBold,
                         fontSize = 16.sp
                     )
@@ -124,14 +128,15 @@ fun AtsCard(
                             modifier = Modifier
                                 .padding(start = 10.dp, top = 2.dp)
                                 .weight(2.5f)
-                                .alpha(0.7f),
+                                .alpha(0.7f)
+                                .basicMarquee(animationMode = MarqueeAnimationMode.Immediately),
                             color = color,
                             fontFamily = Lato_Regular,
                             fontSize = 14.sp,
                             maxLines = 1
                         )
                         Text(
-                            text = detail.date,
+                            text = "${detail.date}  ${detail.month} ${detail.year}",
                             modifier = Modifier
                                 .weight(3f)
                                 .padding(start = 10.dp, top = 5.dp)
@@ -161,7 +166,8 @@ fun AtsCard(
                             fontSize = 17.sp,
                             modifier = Modifier
                                 .weight(4f)
-                                .background(brush = amountColor),
+                                .background(brush = amountColor)
+                                .basicMarquee(animationMode = MarqueeAnimationMode.Immediately),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             softWrap = true,

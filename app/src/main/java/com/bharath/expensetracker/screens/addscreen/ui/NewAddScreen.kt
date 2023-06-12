@@ -53,7 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
@@ -65,8 +64,6 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -109,10 +106,16 @@ fun NewAddScreen() {
             mutableStateOf("")
         }
         var date by remember{
-            mutableStateOf("${LocalDate.now()}")
+            mutableStateOf("${LocalDate.now().dayOfMonth}")
+        }
+        var month by remember{
+            mutableStateOf("${LocalDate.now().month}")
+        }
+        var year by remember{
+            mutableStateOf("${LocalDate.now().year}")
         }
         var time by remember {
-            mutableStateOf("${LocalTime.now().hour }"+" h: "+"${LocalTime.now().minute}"+" m")
+            mutableStateOf("${LocalTime.now().hour }"+" : "+"${LocalTime.now().minute}")
         }
         var clickToSave by remember{ mutableStateOf(false) }
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -135,15 +138,17 @@ fun NewAddScreen() {
             "Passive Income"
         )
         val expenseListCategories = listOf(
-            "Clothing",
+            "Clothing & Apparel",
             "Food",
-            "Movie's & Party",
-            "Vehicle",
+            "Rent & Monthly Expenses",
+            "Movie's & Other",
+            "Vehicle & Accessories",
             "Travel",
-            "Utilities",
+            "Utilities & Essentials",
             "Electronics",
             "Recharges &Bill Payments",
-            "Furniture"
+            "Furniture & Home Equipment",
+            "Other"
         )
 
         var makeNull by remember{
@@ -443,9 +448,19 @@ fun NewAddScreen() {
 
                     OutlinedButton(
                         onClick = {
-                            clickToSave = true
-                            tapToSave = !tapToSave
 
+                            tapToSave = true
+                            val transactionDetail= Transactions(
+                                descriptionOfPayment = nameOfPay,
+                                amount = amountInInr.toFloatOrNull()!!,
+                                type = type,
+                                category = category,
+                                time = time,
+                                date = date,
+                                month = month,
+                                year = year
+                            )
+                            viewModelT.saveToDb(transactionDetail)
 
 
                         }, modifier = Modifier.animateContentSize(
@@ -461,20 +476,18 @@ fun NewAddScreen() {
                     }
                 }
             }
-            if (clickToSave){
-
-
-
-
-                    val transactionDetail= Transactions(descriptionOfPayment = nameOfPay,amount = amountInInr.toFloatOrNull()!!, type =type , category = category, time =time , date =date )
-                viewModelT.saveToDb(transactionDetail)
 
 
 
 
 
 
-            }
+
+
+
+
+
+
 
 
             CalendarDialog(
@@ -485,8 +498,10 @@ fun NewAddScreen() {
                     monthSelection = false,
                 ),
                 selection = CalendarSelection.Date { dat ->
-                    val dates="$dat"
+                    val dates="${dat.dayOfMonth}"
                     date=dates
+                    month="${dat.month}"
+                    year="${dat.year}"
 
                     clockState.show()
 

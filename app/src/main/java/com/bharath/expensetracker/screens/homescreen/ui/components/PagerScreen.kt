@@ -5,7 +5,10 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,7 +45,6 @@ import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.ge
 import com.bharath.expensetracker.screens.homescreen.util.HomePageLists
 import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
-import com.bharath.expensetracker.ui.theme.Lato_LightItalic
 import com.bharath.expensetracker.ui.theme.Lato_Regular
 import com.bharath.expensetracker.ui.theme.Money1exp
 import com.bharath.expensetracker.ui.theme.Money1inc
@@ -149,6 +151,7 @@ fun CustomListScreen(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardHome(detail: Transactions, modifier: Modifier) {
     Card(
@@ -225,7 +228,8 @@ fun CardHome(detail: Transactions, modifier: Modifier) {
                         .fillMaxWidth()
                         .padding(top = 5.dp)
                         .alpha(0.9f)
-                        .background(colorText),
+                        .background(colorText)
+                        .basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused),
 
                     fontFamily = Inter_Bold,
 
@@ -239,10 +243,13 @@ fun CardHome(detail: Transactions, modifier: Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp)
-                        .alpha(0.8f),
-                    text = "${detail.date}  ${detail.time}", fontFamily = Lato_LightItalic,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.inverseSurface
+                        .alpha(0.7f),
+                    text = "${detail.date }  ${detail.month}  ${detail.year}",
+                    fontFamily = Lato_Regular,
+
+                    fontSize = 12.sp,
+
+                    color = MaterialTheme.colorScheme.inverseSurface,
 
                 )
             }

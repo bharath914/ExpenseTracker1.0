@@ -7,4 +7,6 @@ object DbConst {
     const val category ="Category"
     const val time="Time"
     const val date="Date"
+    const val month="Month"
+    const val year="Year"
 }

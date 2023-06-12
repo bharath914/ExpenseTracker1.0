@@ -79,6 +79,13 @@ fun EditScreenAts(t: Transactions) {
             mutableStateOf(t.time)
         }
 
+        var month by remember{
+            mutableStateOf(t.month)
+        }
+        var year by remember{
+            mutableStateOf(t.year)
+        }
+
         var category by remember { mutableStateOf(t.category) }
         val calendarState = rememberSheetState()
         val clockState = rememberSheetState()
@@ -221,8 +228,8 @@ fun EditScreenAts(t: Transactions) {
             Spacer(modifier = Modifier.height(30.dp))
 
 
-            ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = {
-                isExpanded = !isExpanded
+            ExposedDropdownMenuBox(expanded = isExpanded2, onExpandedChange = {
+                isExpanded2 = it
             }) {
                 TextField(
                     value = category, onValueChange =
@@ -287,8 +294,10 @@ fun EditScreenAts(t: Transactions) {
                         monthSelection = false,
                     ),
                     selection = CalendarSelection.Date { dat ->
-                        val dates = "$dat"
+                        val dates = "${dat.dayOfMonth}"
                         date = dates
+                        month ="${dat.month}"
+                        year="${dat.year}"
 
                         clockState.show()
 
@@ -346,7 +355,9 @@ fun EditScreenAts(t: Transactions) {
                     category = category,
                     time = time,
                     date = date,
-                    idA = it
+                    idA = it,
+                    month = month,
+                    year = year
                 )
             }
         }
@@ -366,7 +377,9 @@ fun Preview() {
             "Expense",
             "Other",
             "04:69",
-            "06-06-2023"
+            "06",
+            month = "06",
+            year = "2023"
         )
     )
 
@@ -381,6 +394,8 @@ private fun OnclickSaverAts(
     time: String,
     date: String,
     idA: Int,
+    month:String,
+    year:String
 ) {
 
     val viewModelT: AddToDBViewModel = hiltViewModel()
@@ -393,7 +408,9 @@ private fun OnclickSaverAts(
             category = category,
             time = time,
             date = date,
-            id = idA
+            id = idA,
+            month =month ,
+            year = year
         )
 
         viewModelT.saveToDb(transactionDetail)

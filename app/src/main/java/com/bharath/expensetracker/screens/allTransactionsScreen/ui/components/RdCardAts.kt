@@ -1,7 +1,10 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +54,7 @@ import com.bharath.expensetracker.ui.theme.Money1inc
 import com.bharath.expensetracker.ui.theme.Money2exp
 import com.bharath.expensetracker.ui.theme.Money2inc
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Rd_Card(detail: Transactions,
             atsViewModel: ATSViewModel = hiltViewModel(),
@@ -110,6 +114,7 @@ fun Rd_Card(detail: Transactions,
                         maxLines = 1,
 
                         modifier = Modifier.padding(start = 10.dp, top = 8.dp)
+                            .basicMarquee(animationMode = MarqueeAnimationMode.Immediately)
                         , color =color,
                         fontFamily = Inter_SemiBold,
                         fontSize = 16.sp
@@ -121,6 +126,7 @@ fun Rd_Card(detail: Transactions,
                                 .padding(start = 10.dp, top = 2.dp)
                                 .weight(2.5f)
                                 .alpha(0.7f)
+                                .basicMarquee(animationMode = MarqueeAnimationMode.Immediately)
                             ,
                             color=color,
                             fontFamily = Lato_Regular,
@@ -156,6 +162,7 @@ fun Rd_Card(detail: Transactions,
                             modifier = Modifier
                                 .weight(4f)
                                 .background(brush = amountColor)
+                                .basicMarquee(animationMode = MarqueeAnimationMode.Immediately)
                             ,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis

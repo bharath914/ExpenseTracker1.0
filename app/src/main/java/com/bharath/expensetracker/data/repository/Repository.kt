@@ -29,12 +29,12 @@ class Repository    (
        return dao.getFewCustomTransactions(typeSpend)
     }
 
-    override fun getSumOfTransaction(type: String):Flow< Float> {
-        return dao.getSumOfPayments(type).filterNotNull()
+    override fun getSumOfTransaction(type: String,currentMonth:String):Flow< Float> {
+        return dao.getSumOfPayments(type,currentMonth).filterNotNull()
     }
 
     override suspend fun checkIsEmpty(type: String): Flow<Int> {
-        return dao.checkDbisEmptyorNot(type)
+        return dao.checkDbiSEmptyOrNot(type)
     }
 
     override suspend fun getHighestPayment(type: String): List<Transactions>  {
@@ -42,7 +42,11 @@ class Repository    (
     }
 
     override suspend fun getLowestPayment(type: String): List<Transactions> {
-        return dao.getLowestPayment(type).filterNotNull()
+        return dao.getLowestPayment(type)
+    }
+
+    override suspend fun getCategorySum(category: String, month: String,type: String): Float {
+        return dao.checkCategorySum(category,month,type)
     }
 
 //    override suspend fun getHighestPaymentDetail(float: Float): Flow<Transactions> {
