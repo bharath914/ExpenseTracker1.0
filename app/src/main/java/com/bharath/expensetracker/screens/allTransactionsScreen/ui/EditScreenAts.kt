@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.addscreen.ui.CustomDialog
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
@@ -92,18 +94,8 @@ fun EditScreenAts(t: Transactions) {
         val clickToSave = remember {
             mutableStateOf(false)
         }
-        val expenseCat = arrayOf(
-            "Clothing",
-            "Food",
-            "Movie",
-            "Vehicle",
-            "Travel",
-            "Utilities",
-            "Electronics",
-            "Other"
-        )
-        val incomeCat =
-            arrayOf("Salary", "Business profit", "Gifts", "CashBack", "Other")
+        val expenseCat = Cons.expenseListCategories
+        val incomeCat = Cons.incomeListCategories
 
         val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -360,6 +352,7 @@ fun EditScreenAts(t: Transactions) {
                     year = year
                 )
             }
+
         }
     }
 

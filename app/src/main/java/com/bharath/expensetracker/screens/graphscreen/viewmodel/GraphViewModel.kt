@@ -3,21 +3,10 @@ package com.bharath.expensetracker.screens.graphscreen.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.data.repository.RepositoryInterface
 import com.bharath.expensetracker.screens.graphscreen.ui.screens.data.Details
-import com.bharath.expensetracker.ui.theme.colorBar1
-import com.bharath.expensetracker.ui.theme.colorBar10
-import com.bharath.expensetracker.ui.theme.colorBar11
-import com.bharath.expensetracker.ui.theme.colorBar12
-import com.bharath.expensetracker.ui.theme.colorBar2
-import com.bharath.expensetracker.ui.theme.colorBar3
-import com.bharath.expensetracker.ui.theme.colorBar4
-import com.bharath.expensetracker.ui.theme.colorBar5
-import com.bharath.expensetracker.ui.theme.colorBar6
-import com.bharath.expensetracker.ui.theme.colorBar7
-import com.bharath.expensetracker.ui.theme.colorBar8
-import com.bharath.expensetracker.ui.theme.colorBar9
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -45,48 +34,6 @@ class GraphViewModel @Inject constructor(
 
     val listCategoriesExp: MutableList<Details> = mutableListOf()
     val listCategoriesInc: MutableList<Details> = mutableListOf()
-
-
-    val incomeListCategories = listOf(
-        "Salary",
-        "Business Profits",
-        "Shares & Stocks",
-        "CashBack's",
-        "Gifts",
-        "Passive Income"
-    )
-    val expenseListCategories = listOf(
-        "Clothing & Apparel",
-        "Food",
-        "Rent & Monthly Expenses",
-        "Movie's & Other",
-        "Vehicle & Accessories",
-        "Travel",
-        "Utilities & Essentials",
-        "Electronics",
-        "Recharges &Bill Payments",
-        "Furniture & Home Equipment",
-        "Other"
-    )
-
-    val colorList = listOf(
-        colorBar1,
-        colorBar2,
-        colorBar3,
-        colorBar4,
-        colorBar5,
-        colorBar6,
-        colorBar7,
-        colorBar8,
-        colorBar9,
-        colorBar10,
-        colorBar11,
-        colorBar12,
-
-
-
-        )
-
 
 
 
@@ -126,10 +73,10 @@ class GraphViewModel @Inject constructor(
         isLoadedRangeHigh.value = true
         isLoadedRangeLow.value = true
         viewModelScope.launch(Dispatchers.IO){
-            expenseListCategories.forEachIndexed { i, s ->
+            Cons.expenseListCategories.forEachIndexed { i, s ->
                 val sum =repository.getCategorySum(s,currentMonth,"Expense")
                 if (sum>=1){
-                listCategoriesExp.add(Details(Value=sum,name=s, color = colorList[i]))
+                listCategoriesExp.add(Details(Value=sum,name=s, color = Cons.colorList[i]))
                     listCategoriesExp.sortByDescending { details ->
                     details.Value
 
@@ -141,10 +88,10 @@ class GraphViewModel @Inject constructor(
 
 
         viewModelScope.launch(Dispatchers.IO){
-            incomeListCategories.forEachIndexed { i, s ->
+            Cons.incomeListCategories.forEachIndexed { i, s ->
                 val sum=repository.getCategorySum(s,currentMonth,"Income")
                 if (sum >=1) {
-                    listCategoriesInc.add(Details(Value =sum, name = s,color=colorList[i]))
+                    listCategoriesInc.add(Details(Value =sum, name = s,color=Cons.colorList[i]))
                     listCategoriesInc.sortByDescending {
                         details ->
                         details.Value
