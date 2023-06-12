@@ -2,6 +2,9 @@ package com.bharath.expensetracker.screens.homescreen.ui
 
 
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +47,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,11 +79,25 @@ fun HomeScreen(
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         val currentMonth = "${LocalDate.now().month}"
-        val list = listOf("Profile", "Settings", "FeedBack", "Rate us on PlayStore")
-
+        val list = listOf( "FeedBack", "Rate us on PlayStore")
+        var gotoSelected by remember{ mutableStateOf(false) }
         val selectedItem = remember {
-            mutableStateOf(list[0])
+            mutableStateOf("")
+
         }
+
+        if (gotoSelected){
+        when(selectedItem.value){
+             "FeedBack" ->{
+                sendEmail(LocalContext.current)
+                gotoSelected =false
+            }
+            "Rate us on PlayStore" ->{
+
+            }
+        }
+        }
+
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -92,6 +110,7 @@ fun HomeScreen(
                             onClick = {
                                 scope.launch { drawerState.close() }
                                 selectedItem.value = item
+                                gotoSelected = true
                             },
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
@@ -205,6 +224,24 @@ fun HomeScreen(
 
             }
         }
+    }
+}
+
+fun sendEmail(context: Context) {
+    val addresses= arrayOf("bharathayinala@gmail.com","")
+    val subject= "Expense Tracker FeedBack"
+    try {
+
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/html"
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses)
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+        intent.setPackage("com.google.android.gm")
+        context.startActivity(intent)
+    }catch (e:Exception){
+        e.printStackTrace()
+        Toast.makeText(context, "No Email App Found", Toast.LENGTH_SHORT).show()
     }
 }
 
