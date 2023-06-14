@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -64,6 +65,8 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -78,6 +81,8 @@ fun NewAddScreen() {
         val green2 = Color(0x6827CF60)
         val green3 = Color(0x2836D26B)
         var displayBox by remember { mutableStateOf(true) }
+        val restart = remember{ mutableStateOf(false) }
+
         var showDetails by remember {
             mutableStateOf(false)
         }
@@ -445,6 +450,7 @@ fun NewAddScreen() {
 
                 AnimatedVisibility(visible = notnull) {
 
+                    val coroutine= rememberCoroutineScope()
 
                     OutlinedButton(
                         onClick = {
@@ -461,6 +467,11 @@ fun NewAddScreen() {
                                 year = year
                             )
                             viewModelT.saveToDb(transactionDetail)
+                            coroutine.launch {
+                                delay(800)
+                                restart.value =true
+                            }
+
 
 
                         }, modifier = Modifier.animateContentSize(
@@ -476,6 +487,10 @@ fun NewAddScreen() {
                     }
                 }
             }
+            AnimatedVisibility(visible = restart.value){
+                NewAddScreen()
+            }
+
 
 
 
