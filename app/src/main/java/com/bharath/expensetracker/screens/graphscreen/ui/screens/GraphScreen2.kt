@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.bharath.expensetracker.screens.graphscreen.ui.screens.data.Details
 import com.bharath.expensetracker.screens.graphscreen.viewmodel.GraphViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
+import com.bharath.expensetracker.ui.theme.Lato_Bold
 
 @Composable
 fun GraphScreen2(
@@ -66,10 +67,13 @@ fun GraphScreen2(
                     .padding(bottom = 60.dp)
             ) {
                 Text(
-                    text = type,
+                    text = "$type Stats",
                     fontSize = 35.sp,
+                    fontFamily =  Lato_Bold,
                     modifier = Modifier.fillMaxWidth(),
+
                     textAlign = TextAlign.Center,
+
                     color = MaterialTheme.colorScheme.primary
                 )
 
@@ -229,9 +233,8 @@ fun IndividualStat(
 
                 .background(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.inverseSurface
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-
         ) {
 
 
