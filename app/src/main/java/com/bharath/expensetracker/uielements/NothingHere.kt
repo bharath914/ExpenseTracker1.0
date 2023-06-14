@@ -30,12 +30,20 @@ fun NothingHere() {
         Column {
             Spacer(modifier = Modifier.height(25.dp))
             Text(
-                text = "There is Nothing Here",
+                text = "There is Nothing  Here",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 35.sp,
-                fontFamily = Inter_ExtraLight
+                fontSize = 25.sp,
+                fontFamily = Inter_ExtraLight,
+            )
+            Text(
+                text = "Add Expense or Income",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.inverseSurface,
+                fontSize = 20.sp,
+                fontFamily = Inter_ExtraLight,
             )
 
             Image(
