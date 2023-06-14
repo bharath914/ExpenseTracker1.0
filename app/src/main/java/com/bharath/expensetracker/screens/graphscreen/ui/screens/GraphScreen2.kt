@@ -186,7 +186,10 @@ fun Stats_(
 
         LazyColumn {
             items(list) { item: Details ->
-                val fl: Float = item.Value / totalSum
+                var fl: Float = item.Value / totalSum
+                if (1.0 - fl >= 0.2){
+                    fl += 0.1f
+                }
                 IndividualStat(details = item, width = fl)
 
 
