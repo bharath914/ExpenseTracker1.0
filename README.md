@@ -2,7 +2,7 @@
 This is My First App that is ready to be Uploaded in PlayStore 
 This App has Built on MVVM Architecture
  Android TechStack Used :
-        -> Kotlin 
+        <h1> -> Kotlin </h1>
         -> Room DataBase (dao, repositories)
         -> Jetpack Compose
         -> Flows and Coroutines 
