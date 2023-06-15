@@ -20,6 +20,9 @@ This App has Built on MVVM Architecture
 
 
 <h3> Images </h3>
+<h5> Material You Design </h5>
+<img src ="https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/4dbb4357-63bb-4779-afe6-0cb55211db8a" alt ="Material">
+
 <h6> Image1 </h6>
 <img src ="https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/4b45a245-98d5-4dcf-8e7e-fe2953080dfe" alt ="All Ui" >
 <!-- ![allUi copy](https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/4b45a245-98d5-4dcf-8e7e-fe2953080dfe)
