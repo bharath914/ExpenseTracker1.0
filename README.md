@@ -2,11 +2,11 @@
 This is My First App that is ready to be Uploaded in PlayStore 
 This App has Built on MVVM Architecture
  Android TechStack Used :
-        <h1> -> Kotlin </h1>
-        -> Room DataBase (dao, repositories)
-        -> Jetpack Compose
-        -> Flows and Coroutines 
-        -> ViewModels 
+        <h4> -> Kotlin </h4>
+       <h4>   -> Room DataBase (dao, repositories)</h4>
+       <h4>   -> Jetpack Compose</h4>
+        <h4>  -> Flows and Coroutines </h4>
+       <h4>   -> ViewModels </h4>
         
  This App has Material Theme Dynamic Color Support (Android 12 and Above ) App theme Colors Changes Based on Your Ui and Wallpaper. 
  For Devices with Android 11 and Lower has Purple Color has a Default Color
