@@ -43,9 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.allTransactionsScreen.ui.SetUpNavGraph
 import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.bharath.expensetracker.ui.theme.Lato_Bold
@@ -62,13 +60,13 @@ fun AtsCard(
     detail: Transactions,
     atsViewModel: ATSViewModel = hiltViewModel(),
     modifier: Modifier,
+    onclick:() -> Unit
 
     ) {
     var edit by remember {
         mutableStateOf(false)
     }
 
-    val navController = rememberNavController()
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -118,7 +116,9 @@ fun AtsCard(
                         text = detail.descriptionOfPayment,
                         maxLines = 1,
 
-                        modifier = Modifier.padding(start = 10.dp, top = 8.dp).basicMarquee(), color = color,
+                        modifier = Modifier
+                            .padding(start = 10.dp, top = 8.dp)
+                            .basicMarquee(), color = color,
                         fontFamily = Inter_SemiBold,
                         fontSize = 16.sp
                     )
@@ -204,6 +204,7 @@ fun AtsCard(
                                 )
                             },
                                 onClick = {
+                                    onclick()
                                     edit = !edit
 
                                 }, trailingIcon = {
@@ -223,11 +224,10 @@ fun AtsCard(
 
     }
     AnimatedVisibility(visible = edit) {
-
-
-        SetUpNavGraph(navController, detail)
-
-        navController.navigate("Edit_Screen")
+//
+//        SetUpNavGraph(navController, detail)
+//
+//        navController.navigate("Edit_Screen")
 
     }
 }
@@ -242,7 +242,7 @@ private fun PreviewFun() {
 }
 
 fun getNumber(string: String): String {
-    var value = string.substring(0, string.indexOf('.'))
+    val value = string.substring(0, string.indexOf('.'))
 
     var separator = 3
     var visit = 0

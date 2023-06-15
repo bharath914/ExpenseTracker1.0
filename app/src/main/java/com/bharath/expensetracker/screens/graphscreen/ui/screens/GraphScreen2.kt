@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -66,6 +67,7 @@ fun GraphScreen2(
                     .fillMaxSize()
                     .padding(bottom = 60.dp)
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = "$type Stats",
                     fontSize = 35.sp,
@@ -78,6 +80,14 @@ fun GraphScreen2(
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Total $type : $totalSum",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontFamily = Inter_Bold,
+                    fontSize = 28.sp
+                )
+                Spacer(modifier = Modifier.height(15.dp))
                 Box(modifier = Modifier.weight(0.55f)) {
                     Stats_(list, totalSum)
                 }
@@ -154,7 +164,9 @@ fun Stats_List_item(
             Spacer(modifier = Modifier.width(10.dp))
             Text(text = details.name,
                 color = MaterialTheme.colorScheme.inverseSurface,
-                modifier = Modifier.weight(3f).basicMarquee(),
+                modifier = Modifier
+                    .weight(3f)
+                    .basicMarquee(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
 
@@ -162,7 +174,8 @@ fun Stats_List_item(
             Spacer(modifier = Modifier.width(10.dp))
             Text(text = "₹ ${graphViewModel.getNumber(details.Value.toString()) }",
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.weight(2f)
+                modifier = Modifier
+                    .weight(2f)
                     .basicMarquee(),
                 fontSize = 18.sp,
                 fontFamily = Inter_Bold,
@@ -186,13 +199,19 @@ fun Stats_(
             .fillMaxSize()
 
     ) {
-        var i = 0
+
+
+        val fllist:ArrayList<Float> = ArrayList()
+
+        list.forEachIndexed{i,item->
+            fllist.add(i,  item.Value /totalSum)
+        }
 
         LazyColumn {
-            items(list) { item: Details ->
-                var fl: Float = item.Value / totalSum
+            itemsIndexed(list) { ind,item: Details ->
+                var fl: Float = fllist[ind]
                 if (1.0 - fl >= 0.2){
-                    fl += 0.1f
+                    fl += 0.2f
                 }
                 IndividualStat(details = item, width = fl)
 

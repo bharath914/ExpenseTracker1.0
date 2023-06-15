@@ -16,7 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -50,163 +57,279 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalPagerApi::class,
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
+)
 @Composable
 @Preview
 fun AllTransactionsScreen(
     atsViewModel: ATSViewModel = hiltViewModel(),
 ) {
-    Surface(color = MaterialTheme.colorScheme.background) {
+    val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    var shouldEdit by remember { mutableStateOf(false) }
+    val listTs: ArrayList<Transactions> = ArrayList()
 
-        var tabIndex by remember { mutableStateOf(0) }
-        var tabselected by remember { mutableStateOf(false) }
-        val pagerState = rememberPagerState()
-        val coroutineScope= rememberCoroutineScope()
-        val tabs = listOf(
-            "All", "Expenses",
-            "Income",
-            "Recently Deleted"
-        )
+    val list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
+    val list2 =
+        atsViewModel.getAllExpensesAts()
+            .collectAsState(initial = emptyList()).value
+    val list3 =
+        atsViewModel.getAllIncomeAts()
+            .collectAsState(initial = emptyList()).value
+    val list4 =
+        atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
+//    listTs.add(list1[0])
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 70.dp)
+    var t by remember {
+        mutableStateOf(Transactions("",0f,"","",
+            "","","","",1))
+    }
+
+    Scaffold {
+        it
+        ModalBottomSheetLayout(
+            sheetState = state,
+            sheetShape = RoundedCornerShape(10),
+            sheetElevation = 25.dp,
+
+            sheetContent = {
+
+                AnimatedVisibility(visible = shouldEdit) {
+
+                    EditScreenAts(t = t){
+                        scope.launch {
+
+                        state.hide()
+                        }
+                    }
+
+                }
+            },
+            sheetBackgroundColor = MaterialTheme.colorScheme.primaryContainer
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+
+
+            Surface(color = MaterialTheme.colorScheme.background) {
+
+                var tabIndex by remember { mutableStateOf(0) }
+                var tabselected by remember { mutableStateOf(false) }
+                val pagerState = rememberPagerState()
+                val coroutineScope = rememberCoroutineScope()
+                val tabs = listOf(
+                    "All", "Expenses",
+                    "Income",
+                    "Recently Deleted"
+                )
+
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .fillMaxSize()
+                        .padding(bottom = 70.dp)
                 ) {
-                    Row {
-
-
-                        Text(
-                            text = "History", fontSize = 45.sp,
-                            fontFamily = Inter_Bold,
-                            letterSpacing = 1.sp,
-                            color = MaterialTheme.colorScheme.inversePrimary,
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
                             modifier = Modifier
-                                .padding(10.dp)
-                                .weight(6f)
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                        ) {
+                            Row {
 
 
+                                Text(
+                                    text = "History", fontSize = 45.sp,
+                                    fontFamily = Inter_Bold,
+                                    letterSpacing = 1.sp,
+                                    color = MaterialTheme.colorScheme.inversePrimary,
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .weight(6f)
+
+
+                                )
+
+
+                            }
+                        }
+
+                        ScrollableTabRow(
+
+                            selectedTabIndex = tabIndex,
+                            modifier = Modifier.fillMaxWidth(),
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            edgePadding = 10.dp,
+
+
+                            ) {
+
+                            tabs.forEachIndexed { tabindex, tab ->
+                                Tab(
+                                    selected = tabIndex == tabindex,
+                                    onClick = {
+
+
+                                        tabIndex = tabindex
+                                        coroutineScope.launch {
+                                            pagerState.scrollToPage(tabIndex)
+
+                                        }
+
+
+                                    },
+
+                                    text = {
+                                        Text(
+                                            text = tab,
+                                            fontSize = 15.sp,
+                                            fontFamily = Inter_Bold,
+                                            modifier = Modifier.alpha(0.7f)
+                                        )
+                                    },
+                                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                                    unselectedContentColor = MaterialTheme.colorScheme.inverseSurface
+                                )
+
+                            }
+                        }
+
+
+                        var isLoading by remember {
+
+
+                            mutableStateOf(false)
+                        }
+
+
+
+                        HorizontalPager(
+                            count = 4,
+                            modifier = Modifier.fillMaxSize(), state = pagerState,
+
+                            verticalAlignment = Alignment.Top
                         )
+                        {
 
 
-                    }
-                }
+                            AnimatedContent(
+                                targetState = pagerState.currentPage,
+                                transitionSpec = {
+                                    slideInVertically() with fadeOut()
 
-                ScrollableTabRow(
-
-                    selectedTabIndex = tabIndex,
-                    modifier = Modifier.fillMaxWidth(),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    edgePadding = 10.dp,
-
-
-                    ) {
-
-                    tabs.forEachIndexed { tabindex, tab ->
-                        Tab(
-                            selected = tabIndex == tabindex,
-                            onClick = {
-
-
-
-                                    tabIndex = tabindex
-                                coroutineScope.launch {
-                                    pagerState.scrollToPage(tabIndex)
 
                                 }
 
+                            )
 
-                            },
-
-                            text = {
-                                Text(
-                                    text = tab,
-                                    fontSize = 15.sp,
-                                    fontFamily = Inter_Bold,
-                                    modifier = Modifier.alpha(0.7f)
-                                )
-                            },
-                            selectedContentColor = MaterialTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.inverseSurface
-                        )
-
-                    }
-                }
+                            {
 
 
+                                when (currentPage) {
+                                    0 -> {
+                                        if (list1.isEmpty()) {
+//                                        CustomList(list = list1)
+                                            AnimatedVisibility(visible = true) {
 
-                var isLoading by remember {
-
-
-                    mutableStateOf(false)
-                }
-
-
-                val list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
-                val list2 =
-                    atsViewModel.getAllExpensesAts().collectAsState(initial = emptyList()).value
-                val list3 =
-                    atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
-                val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
-                isLoading = true
+                                                NothingHere()
+                                            }
+                                        } else {
 
 
-                HorizontalPager(
-                    count = 4,
-                    modifier = Modifier.fillMaxSize(), state = pagerState,
+                                            LazyColumn {
 
-                    verticalAlignment = Alignment.Top
-                )
-                {
+                                                items(list1) {
+//
+                                                    val modifier = Modifier
+                                                    AtsCard(detail = it, modifier = modifier) {
+
+                                                        t =it
+                                                        shouldEdit = true
+                                                        scope.launch { state.show() }
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                        tabIndex = currentPage
+
+                                    }
+
+                                    1 -> {
+//                                        CustomList(list = list2)
+                                        if (list2.isEmpty()) {
+//                                        CustomList(list = list1)
+                                            AnimatedVisibility(visible = true) {
+
+                                                NothingHere()
+                                            }
+                                        } else {
 
 
-                    AnimatedContent(
-                        targetState = pagerState.currentPage,
-                        transitionSpec = {
-                            slideInVertically() with fadeOut()
+                                            LazyColumn {
+
+                                                items(list2) {
+//
+                                                    val modifier = Modifier
+                                                    AtsCard(detail = it, modifier = modifier) {
+
+                                                        t =it
+                                                        shouldEdit = true
+                                                        scope.launch {
+                                                            state.show()
+                                                        }
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                        tabIndex = currentPage
+                                    }
+
+                                    2 -> {
+//                                        CustomList(list = list3)
+                                        if (list3.isEmpty()) {
+//                                        CustomList(list = list1)
+                                            AnimatedVisibility(visible = true) {
+
+                                                NothingHere()
+                                            }
+                                        } else {
 
 
+                                            LazyColumn {
+
+                                                items(list3) {
+//
+                                                    val modifier = Modifier
+                                                    AtsCard(detail = it, modifier = modifier) {
+
+                                                        t =it
+                                                        shouldEdit = true
+                                                        scope.launch { state.show() }
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                        tabIndex = currentPage
+                                    }
+
+                                    3 -> {
+                                        RD_CustomList(list = list4)
+                                        tabIndex = currentPage
+                                    }
+                                }
+
+                            }
                         }
-
-                    )
-
-                    {
-
-
-                        when (currentPage) {
-                            0 -> {
-                                CustomList(list = list1)
-                                tabIndex = currentPage
-
-                            }
-
-                            1 -> {
-                                CustomList(list = list2)
-                                tabIndex = currentPage
-                            }
-
-                            2 -> {
-                                CustomList(list = list3)
-                                tabIndex = currentPage
-                            }
-
-                            3 -> {
-                                RD_CustomList(list = list4)
-                                tabIndex = currentPage
-                            }
-                        }
-
                     }
+
                 }
             }
-
         }
     }
 }
@@ -242,7 +365,7 @@ fun CustomList(list: List<Transactions>) {
 }
 
 @Composable
-fun LazyListPay(list: List<Transactions>) {
+fun LazyListPay(list: List<Transactions>): Unit {
     if (list.isEmpty()) {
         AnimatedVisibility(visible = true) {
 
@@ -252,10 +375,11 @@ fun LazyListPay(list: List<Transactions>) {
 
 
         LazyColumn {
+
             items(list) {
 //
                 val modifier = Modifier
-                AtsCard(detail = it, modifier = modifier)
+//                AtsCard(detail = it, modifier = modifier)
 
             }
 
@@ -263,13 +387,13 @@ fun LazyListPay(list: List<Transactions>) {
     }
 }
 
-@Composable
-fun SetUpNavGraph(navHostController: NavHostController, t: Transactions) {
-    NavHost(navController = navHostController,
-        startDestination = "Edit_Screen",
-        builder = {
-            composable("Edit_Screen") {
-                EditScreenAts(t = t)
-            }
-        })
-}
+//@Composable
+//fun SetUpNavGraph(navHostController: NavHostController, t: Transactions) {
+//    NavHost(navController = navHostController,
+//        startDestination = "Edit_Screen",
+//        builder = {
+//            composable("Edit_Screen") {
+//                EditScreenAts(t = t)
+//            }
+//        })
+//}

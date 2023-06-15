@@ -450,7 +450,7 @@ fun NewAddScreen() {
 
                 AnimatedVisibility(visible = notnull) {
 
-                    val coroutine= rememberCoroutineScope()
+                    val         coroutine= rememberCoroutineScope()
 
                     OutlinedButton(
                         onClick = {

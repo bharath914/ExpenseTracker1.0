@@ -12,37 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Inter_Regular
 
-@Composable
-fun OnclickSaver(
-    descriptionOfPayment:String,
-    amount : String,
-    type:String,
-    category:String,
-    time:String,
-    date:String,
-    month:String,
-    year:String
-) {
-
-    val viewModelT: AddToDBViewModel = hiltViewModel()
-
-    if (descriptionOfPayment !="" && amount !="" && type !="" &&category!=""){
-        val transactionDetail= Transactions(descriptionOfPayment = descriptionOfPayment,amount = amount.toFloatOrNull()!!, type =type , category = category, time =time , date =date, month = month, year = year )
-
-        viewModelT.saveToDb(transactionDetail)
-
-    }
-
-    else{
-        CustomDialog()
-    }
-}
 
 
 @Composable

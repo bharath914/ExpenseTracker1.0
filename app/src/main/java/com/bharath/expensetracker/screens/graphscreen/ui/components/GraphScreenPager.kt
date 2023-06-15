@@ -16,12 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.graphscreen.util.GraphPagelist
 import com.bharath.expensetracker.screens.homescreen.ui.components.CardHome
+import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.bharath.expensetracker.ui.theme.Lato_Bold
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -94,7 +98,15 @@ fun CustomGraphCardLayout(
 fun PercentageText(percentage: Float) {
 
     Text(
-        text = "The Analysis say's that you have used $percentage % of your income",
+        text = buildAnnotatedString  {
+
+                           append("You Have Used : ")
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontFamily = Inter_Bold, fontSize = 18.sp)){
+                append("%.2f".format(percentage) +" % ")
+            }
+            append("Of Your Income")
+
+        },
         fontFamily = Inter_SemiBold,
         fontSize = 15.sp,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
