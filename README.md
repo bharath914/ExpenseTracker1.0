@@ -25,5 +25,7 @@ This App has Built on MVVM Architecture
 
 <h6> Image1 </h6>
 <img src ="https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/4b45a245-98d5-4dcf-8e7e-fe2953080dfe" alt ="All Ui" >
+<h6> Image 2 </h6>
+<img src ="https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/2efd07f6-fe91-49fd-af23-23e3127c986f" alt ="Home">
 <!-- ![allUi copy](https://github.com/bharath914/ExpenseTracker1.0/assets/98139751/4b45a245-98d5-4dcf-8e7e-fe2953080dfe)
  -->
