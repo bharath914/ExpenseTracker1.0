@@ -1,12 +1,10 @@
 package com.bharath.expensetracker.screens.homescreen.ui
 
 
-
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +17,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,12 +59,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.getNumber
-import com.bharath.expensetracker.screens.graphscreen.ui.components.PercentageText
 import com.bharath.expensetracker.screens.homescreen.ui.components.CustomPagerHome
 import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
-import com.bharath.expensetracker.ui.theme.Lato_Regular
 import com.bharath.expensetracker.ui.theme.Money1exp
 import com.bharath.expensetracker.ui.theme.Money1inc
 import com.bharath.expensetracker.ui.theme.Money2exp
@@ -73,165 +74,189 @@ import java.time.LocalDate
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    onclick: () -> Unit,
 ) {
 
 
-    Surface(color = MaterialTheme.colorScheme.surface) {
+    Scaffold(floatingActionButton = {
+        ExtendedFloatingActionButton(
+            text = {
+                Text(text = "ADD", fontWeight = FontWeight.Bold)
 
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        val currentMonth = "${LocalDate.now().month}"
-        val list = listOf( "FeedBack", "Rate us on PlayStore")
-        var gotoSelected by remember{ mutableStateOf(false) }
-        val selectedItem = remember {
-            mutableStateOf("")
+            },
+            icon = {
 
-        }
+                Icon(imageVector = Icons.Filled.AddCircleOutline, contentDescription = "Add BUtton")
+            },
+            onClick = { onclick() },
+            modifier = Modifier.padding(bottom = 55.dp),
+            shape = CircleShape
+        )
+    }, floatingActionButtonPosition = FabPosition.End)
+    { it ->
+        it
 
-        if (gotoSelected){
-        when(selectedItem.value){
-             "FeedBack" ->{
-                sendEmail(LocalContext.current)
-                gotoSelected =false
+
+
+
+        Surface(color = MaterialTheme.colorScheme.surface) {
+
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
+            val currentMonth = "${LocalDate.now().month}"
+            val list = listOf("FeedBack", "Rate us on PlayStore")
+            var gotoSelected by remember { mutableStateOf(false) }
+            val selectedItem = remember {
+                mutableStateOf("")
+
             }
-            "Rate us on PlayStore" ->{
 
-            }
-        }
-        }
+            if (gotoSelected) {
+                when (selectedItem.value) {
+                    "FeedBack" -> {
+                        sendEmail(LocalContext.current)
+                        gotoSelected = false
+                    }
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet {
-                    Spacer(modifier = Modifier.height(15.dp))
-                    list.forEach { item ->
-                        NavigationDrawerItem(
-                            label = { Text(text = item) },
-                            selected = item == selectedItem.value,
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                                selectedItem.value = item
-                                gotoSelected = true
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                        )
+                    "Rate us on PlayStore" -> {
 
                     }
                 }
             }
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val sumOfExpenses = homeViewModel.expSumArr!!.collectAsState(initial = 0f)
-                val sumOfIncomes = homeViewModel.incomeSumArr!!.collectAsState(initial = 0f)
-                val balanceAmount = remember {
-                    mutableStateOf(0.0f)
-                }
 
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(4f)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.onPrimary
-                                )
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    ModalDrawerSheet {
+                        Spacer(modifier = Modifier.height(15.dp))
+                        list.forEach { item ->
+                            NavigationDrawerItem(
+                                label = { Text(text = item) },
+                                selected = item == selectedItem.value,
+                                onClick = {
+                                    scope.launch { drawerState.close() }
+                                    selectedItem.value = item
+                                    gotoSelected = true
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
-
-                        ),
-//            contentAlignment = Alignment.Center
-                ) {
-
-                    balanceAmount.value = sumOfIncomes.value - sumOfExpenses.value
-
-                    IconButton(
-                        onClick = {
-                            scope.launch { drawerState.open() }
-
-
-                        },
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .padding(start = 5.dp)
-                            .scale(1.4f)
-                    ) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Menu")
-                    }
-                    Column {
-                        Spacer(modifier = Modifier.height(40.dp))
-
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Text(text = "CURRENT BALANCE")
-                            Text(
-                                text = "₹ ${getNumber(balanceAmount.value.toString())}",
-                                textAlign = TextAlign.Center,
-                                fontSize = 40.sp,
-                                fontFamily = Inter_SemiBold
-                            )
-                            Text(text = "Month : $currentMonth ")
-
 
                         }
-                        Spacer(modifier = Modifier.height(40.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp)
-                        ) {
-                            Column {
+                    }
+                }
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    val sumOfExpenses = homeViewModel.expSumArr!!.collectAsState(initial = 0f)
+                    val sumOfIncomes = homeViewModel.incomeSumArr!!.collectAsState(initial = 0f)
+                    val balanceAmount = remember {
+                        mutableStateOf(0.0f)
+                    }
 
 
-                                IncomeExpenseTxt(
-                                    income =
-                                    sumOfIncomes.value,
-                                    Expense =
-                                    sumOfExpenses.value
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(4f)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.primary,
+                                        MaterialTheme.colorScheme.onPrimary
+                                    )
                                 )
 
+                            ),
+//            contentAlignment = Alignment.Center
+                    ) {
+
+                        balanceAmount.value = sumOfIncomes.value - sumOfExpenses.value
+
+                        IconButton(
+                            onClick = {
+                                scope.launch { drawerState.open() }
+
+
+                            },
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(start = 5.dp)
+                                .scale(1.4f)
+                        ) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Menu")
+                        }
+                        Column {
+                            Spacer(modifier = Modifier.height(40.dp))
+
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Text(text = "CURRENT BALANCE")
+                                Text(
+                                    text = "₹ ${getNumber(balanceAmount.value.toString())}",
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 40.sp,
+                                    fontFamily = Inter_SemiBold
+                                )
+                                Text(text = "Month : $currentMonth ")
+
+
+                            }
+                            Spacer(modifier = Modifier.height(40.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp)
+                            ) {
+                                Column {
+
+
+                                    IncomeExpenseTxt(
+                                        income =
+                                        sumOfIncomes.value,
+                                        Expense =
+                                        sumOfExpenses.value
+                                    )
+
+                                }
                             }
                         }
                     }
+
+
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(5f)
+                    ) {
+
+
+                        CustomPagerHome()
+
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+
+
+                    }
+
                 }
-
-
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(5f)
-                ) {
-
-
-                    CustomPagerHome()
-
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                ) {
-
-
-                }
-
             }
         }
     }
 }
 
 fun sendEmail(context: Context) {
-    val addresses= arrayOf("bharathayinala@gmail.com","")
-    val subject= "Expense Tracker FeedBack"
+    val addresses = arrayOf("bharathayinala@gmail.com", "")
+    val subject = "Expense Tracker FeedBack"
     try {
 
 
@@ -241,7 +266,7 @@ fun sendEmail(context: Context) {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
         intent.setPackage("com.google.android.gm")
         context.startActivity(intent)
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         Toast.makeText(context, "No Email App Found", Toast.LENGTH_SHORT).show()
     }
@@ -262,9 +287,10 @@ fun IncomeExpenseTxt(income: Float, Expense: Float) {
         )
     )
     Column {
-        Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-            ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
             Box(
                 modifier = Modifier
                     .size(18.dp)
@@ -283,9 +309,7 @@ fun IncomeExpenseTxt(income: Float, Expense: Float) {
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.8f)
-
-                ,
+                    .alpha(0.8f),
                 maxLines = 1,
                 fontFamily = Inter_Bold
             )
@@ -324,28 +348,6 @@ fun IncomeExpenseTxt(income: Float, Expense: Float) {
 @Composable
 @Preview(showBackground = true)
 fun Preview() {
-    HomeScreen()
+    HomeScreen(onclick = {})
 }
 
-
-@Composable
-private fun ShowPercentage(percentage: Float) {
-    var showtext by remember {
-        mutableStateOf(false)
-    }
-    Text(text = "Tap to show Income Analysis", modifier = Modifier
-        .clickable {
-            showtext = !showtext
-        }
-        .alpha(0.5f),
-        textAlign = TextAlign.Center,
-        fontSize = 11.sp,
-        fontFamily = Lato_Regular,
-        color = MaterialTheme.colorScheme.inverseSurface
-    )
-    if (showtext) {
-        PercentageText(percentage = percentage)
-
-
-    }
-}

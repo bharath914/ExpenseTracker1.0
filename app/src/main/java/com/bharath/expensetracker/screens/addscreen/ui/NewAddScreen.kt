@@ -122,11 +122,10 @@ fun NewAddScreen() {
         var time by remember {
             mutableStateOf("${LocalTime.now().hour }"+" : "+"${LocalTime.now().minute}")
         }
-        var clickToSave by remember{ mutableStateOf(false) }
+
         val keyboardController = LocalSoftwareKeyboardController.current
 
         var dropExposed1 by remember { mutableStateOf(false) }
-        var dropExposed2 by remember { mutableStateOf(false) }
 
         var tapToSave by remember{
             mutableStateOf(false)
@@ -156,7 +155,7 @@ fun NewAddScreen() {
             "Other"
         )
 
-        var makeNull by remember{
+        val makeNull by remember{
             mutableStateOf(false)
         }
 
@@ -200,7 +199,7 @@ fun NewAddScreen() {
                     Column {
 
                         Text(
-                            text = "Select Income / Expense", modifier = Modifier.fillMaxWidth(),
+                            text = "SELECT  \n \n Income / Expense", modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             fontSize = 30.sp,
                             fontFamily = Inter_SemiBold,
@@ -443,9 +442,7 @@ fun NewAddScreen() {
                      mutableStateOf(true)
                  }
 
-                var clearall by remember{
-                    mutableStateOf(false)
-                }
+
                 notnull=amountInInr!="" && nameOfPay!="" && category!=""
 
                 AnimatedVisibility(visible = notnull) {

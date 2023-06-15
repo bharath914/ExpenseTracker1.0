@@ -20,7 +20,7 @@ fun NavHostContainer(
         startDestination = "home",
         builder = {
             composable("home") {
-                HomeScreen()
+                HomeScreen(){navHostController.navigate("add")}
             }
             composable("graph") {
                 GraphScreen()
