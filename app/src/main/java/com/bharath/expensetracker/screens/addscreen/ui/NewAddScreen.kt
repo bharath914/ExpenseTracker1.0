@@ -8,6 +8,7 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,12 +42,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomCenter
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bharath.expensetracker.R
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
@@ -178,7 +185,8 @@ fun NewAddScreen() {
             ) {
 
 
-                Box(modifier = Modifier.fillMaxWidth()) {
+
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
 
 
                     val red1 = Color(0xFFD82445)
@@ -206,7 +214,7 @@ fun NewAddScreen() {
                             color = MaterialTheme.colorScheme.primary
                         )
 
-                        Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(80.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -264,7 +272,11 @@ fun NewAddScreen() {
                             }
 
                         }
-
+//                        Box(modifier =Modifier.fillMaxWidth() , contentAlignment = BottomCenter){
+//                            Image(painter = painterResource(id = R.drawable.piggybank),
+//                                contentDescription =""
+//                            , alpha = 0.7f, modifier = Modifier.blur(2.dp))
+//                        }
                     }
                 }
 
