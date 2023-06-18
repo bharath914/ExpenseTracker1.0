@@ -20,6 +20,15 @@ interface DaoDb
 
     @Delete
     suspend fun delete(transaction: Transactions)
+
+    @Query("delete from Transactions")
+    suspend fun dropAllData()
+
+
+
+
+
+
     @Query("SELECT EXISTS(SELECT 1 FROM transactions where Type =:typeSpend)")
     fun checkDbiSEmptyOrNot(typeSpend: String):Flow<Int>
     @Query("SELECT * FROM transactions Order by id DESC ")
@@ -40,6 +49,8 @@ interface DaoDb
 
     @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY Amount ASC LIMIT 1")
     fun getLowestPayment(typeSpend: String):List<Transactions>
+
+
 
 
 

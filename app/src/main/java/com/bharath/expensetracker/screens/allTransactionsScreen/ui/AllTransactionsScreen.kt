@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,15 +41,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.AtsCard
 import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.Rd_Card
 import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
+import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.ui.theme.Allura
 import com.bharath.expensetracker.ui.theme.Inter_Bold
+import com.bharath.expensetracker.uielements.NoExpense
+import com.bharath.expensetracker.uielements.NoIncome
 import com.bharath.expensetracker.uielements.NothingHere
+import com.bharath.expensetracker.uielements.RecentlyDeleted
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -58,69 +60,68 @@ import kotlinx.coroutines.launch
 
 
 @OptIn(
-    ExperimentalAnimationApi::class, ExperimentalPagerApi::class,
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
+    ExperimentalAnimationApi::class,
+    ExperimentalPagerApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class
 )
 @Composable
 @Preview
 fun AllTransactionsScreen(
     atsViewModel: ATSViewModel = hiltViewModel(),
 ) {
+    val settingsVm: SettingsVm = hiltViewModel()
+    val colorBlock by remember {
+        mutableStateOf(!settingsVm.colorBlocks.value)
+    }
     val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     var shouldEdit by remember { mutableStateOf(false) }
-    val listTs: ArrayList<Transactions> = ArrayList()
+
 
     val list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
-    val list2 =
-        atsViewModel.getAllExpensesAts()
-            .collectAsState(initial = emptyList()).value
-    val list3 =
-        atsViewModel.getAllIncomeAts()
-            .collectAsState(initial = emptyList()).value
-    val list4 =
-        atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
+    val list2 = atsViewModel.getAllExpensesAts().collectAsState(initial = emptyList()).value
+    val list3 = atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
+    val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
 //    listTs.add(list1[0])
 
     var t by remember {
-        mutableStateOf(Transactions("",0f,"","",
-            "","","","",1))
+        mutableStateOf(
+            Transactions(
+                "", 0f, "", "", "", "", "", "", 1
+            )
+        )
     }
 
-    Scaffold {
+    Scaffold { it ->
         it
         ModalBottomSheetLayout(
-            sheetState = state,
-            sheetShape = RoundedCornerShape(10),
-            sheetElevation = 25.dp,
+            sheetState = state, sheetShape = RoundedCornerShape(10), sheetElevation = 25.dp,
 
             sheetContent = {
 
                 AnimatedVisibility(visible = shouldEdit) {
 
-                    EditScreenAts(t = t){
+                    EditScreenAts(t = t) {
                         scope.launch {
 
-                        state.hide()
+                            state.hide()
                         }
                     }
 
                 }
-            },
-            sheetBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+            }, sheetBackgroundColor = MaterialTheme.colorScheme.primaryContainer
         ) {
 
 
-            Surface(color = MaterialTheme.colorScheme.background) {
+            Surface(color = MaterialTheme.colorScheme.surface) {
 
                 var tabIndex by remember { mutableStateOf(0) }
-                var tabselected by remember { mutableStateOf(false) }
+
                 val pagerState = rememberPagerState()
                 val coroutineScope = rememberCoroutineScope()
                 val tabs = listOf(
-                    "All", "Expenses",
-                    "Income",
-                    "Recently Deleted"
+                    "All", "Expenses", "Income", "Recently Deleted"
                 )
 
                 Box(
@@ -132,19 +133,20 @@ fun AllTransactionsScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .wrapContentHeight()
-                                .background(MaterialTheme.colorScheme.primaryContainer)
+
+                                .background(MaterialTheme.colorScheme.surface)
                         ) {
                             Row {
 
 
                                 Text(
-                                    text = "History", fontSize = 45.sp,
-                                    fontFamily = Inter_Bold,
+                                    text = "History",
+                                    fontSize = 55.sp,
+                                    fontFamily = Allura,
                                     letterSpacing = 1.sp,
-                                    color = MaterialTheme.colorScheme.inversePrimary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier
-                                        .padding(10.dp)
+                                        .padding(1.dp)
                                         .weight(6f)
 
 
@@ -158,19 +160,19 @@ fun AllTransactionsScreen(
 
                             selectedTabIndex = tabIndex,
                             modifier = Modifier.fillMaxWidth(),
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            containerColor = MaterialTheme.colorScheme.surface,
                             edgePadding = 10.dp,
 
 
                             ) {
 
-                            tabs.forEachIndexed { tabindex, tab ->
+                            tabs.forEachIndexed { tab_index, tab ->
                                 Tab(
-                                    selected = tabIndex == tabindex,
+                                    selected = tabIndex == tab_index,
                                     onClick = {
 
 
-                                        tabIndex = tabindex
+                                        tabIndex = tab_index
                                         coroutineScope.launch {
                                             pagerState.scrollToPage(tabIndex)
 
@@ -204,21 +206,17 @@ fun AllTransactionsScreen(
 
 
                         HorizontalPager(
-                            count = 4,
-                            modifier = Modifier.fillMaxSize(), state = pagerState,
+                            count = 4, modifier = Modifier.fillMaxSize(), state = pagerState,
 
                             verticalAlignment = Alignment.Top
-                        )
-                        {
+                        ) {
 
 
-                            AnimatedContent(
-                                targetState = pagerState.currentPage,
-                                transitionSpec = {
-                                    slideInVertically() with fadeOut()
+                            AnimatedContent(targetState = pagerState.currentPage, transitionSpec = {
+                                slideInVertically() with fadeOut()
 
 
-                                }
+                            }
 
                             )
 
@@ -238,15 +236,21 @@ fun AllTransactionsScreen(
 
                                             LazyColumn {
 
-                                                items(list1) {
+                                                items(list1) {it->
 //
                                                     val modifier = Modifier
-                                                    AtsCard(detail = it, modifier = modifier) {
+                                                    AtsCard(
+                                                        detail = it,
+                                                        modifier = modifier,
+                                                        onclick = {
 
-                                                        t =it
-                                                        shouldEdit = true
-                                                        scope.launch { state.show() }
-                                                    }
+                                                            t = it
+                                                            shouldEdit = true
+                                                            scope.launch { state.show() }
+                                                        },
+                                                        colorOfCategory = Cons.colorMap[it.category]!!,
+                                                        showColorBlock = colorBlock
+                                                    )
 
                                                 }
 
@@ -262,7 +266,7 @@ fun AllTransactionsScreen(
 //                                        CustomList(list = list1)
                                             AnimatedVisibility(visible = true) {
 
-                                                NothingHere()
+                                                NoIncome()
                                             }
                                         } else {
 
@@ -272,14 +276,20 @@ fun AllTransactionsScreen(
                                                 items(list2) {
 //
                                                     val modifier = Modifier
-                                                    AtsCard(detail = it, modifier = modifier) {
+                                                    AtsCard(
+                                                        detail = it,
+                                                        modifier = modifier,
+                                                        onclick = {
 
-                                                        t =it
-                                                        shouldEdit = true
-                                                        scope.launch {
-                                                            state.show()
-                                                        }
-                                                    }
+                                                            t = it
+                                                            shouldEdit = true
+                                                            scope.launch {
+                                                                state.show()
+                                                            }
+                                                        },
+                                                        colorOfCategory = Cons.colorMap[it.category]!!,
+                                                        showColorBlock = colorBlock
+                                                    )
 
                                                 }
 
@@ -294,22 +304,28 @@ fun AllTransactionsScreen(
 //                                        CustomList(list = list1)
                                             AnimatedVisibility(visible = true) {
 
-                                                NothingHere()
+                                                NoExpense()
                                             }
                                         } else {
 
 
                                             LazyColumn {
 
-                                                items(list3) {
+                                                items(list3) {it->
 //
                                                     val modifier = Modifier
-                                                    AtsCard(detail = it, modifier = modifier) {
+                                                    AtsCard(
+                                                        detail = it,
+                                                        modifier = modifier,
+                                                        onclick = {
 
-                                                        t =it
-                                                        shouldEdit = true
-                                                        scope.launch { state.show() }
-                                                    }
+                                                            t = it
+                                                            shouldEdit = true
+                                                            scope.launch { state.show() }
+                                                        },
+                                                        colorOfCategory = Cons.colorMap[it.category]!!,
+                                                        showColorBlock = colorBlock
+                                                    )
 
                                                 }
 
@@ -339,7 +355,7 @@ fun RD_CustomList(list: List<Transactions>) {
     if (list.isEmpty()) {
         AnimatedVisibility(visible = true) {
 
-            NothingHere()
+            RecentlyDeleted()
         }
     } else {
 
@@ -357,43 +373,7 @@ fun RD_CustomList(list: List<Transactions>) {
 
 }
 
-@Composable
-fun CustomList(list: List<Transactions>) {
-
-    LazyListPay(list)
-
-}
-
-@Composable
-fun LazyListPay(list: List<Transactions>): Unit {
-    if (list.isEmpty()) {
-        AnimatedVisibility(visible = true) {
-
-            NothingHere()
-        }
-    } else {
 
 
-        LazyColumn {
 
-            items(list) {
-//
-                val modifier = Modifier
-//                AtsCard(detail = it, modifier = modifier)
 
-            }
-
-        }
-    }
-}
-
-//@Composable
-//fun SetUpNavGraph(navHostController: NavHostController, t: Transactions) {
-//    NavHost(navController = navHostController,
-//        startDestination = "Edit_Screen",
-//        builder = {
-//            composable("Edit_Screen") {
-//                EditScreenAts(t = t)
-//            }
-//        })
-//}

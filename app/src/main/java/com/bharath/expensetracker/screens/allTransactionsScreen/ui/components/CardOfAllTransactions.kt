@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -60,7 +62,9 @@ fun AtsCard(
     detail: Transactions,
     atsViewModel: ATSViewModel = hiltViewModel(),
     modifier: Modifier,
-    onclick:() -> Unit
+    onclick:() -> Unit,
+    colorOfCategory :Color  =Color.Red,
+    showColorBlock:Boolean
 
     ) {
     var edit by remember {
@@ -71,10 +75,12 @@ fun AtsCard(
         modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
+
             .padding(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = RoundedCornerShape(2.dp)
 
     ) {
         var color = Color.Black
@@ -105,7 +111,15 @@ fun AtsCard(
         }
 
         Row(modifier = Modifier.fillMaxSize()) {
-
+            if (showColorBlock) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(6.dp)
+                ) {
+                    Box(modifier = Modifier.fillMaxSize().background(colorOfCategory))
+                }
+            }
             Box(
                 modifier = Modifier
                     .weight(3f)

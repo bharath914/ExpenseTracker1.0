@@ -8,6 +8,7 @@ interface RepositoryInterface {
     suspend fun insertT(transactions: Transactions)
     suspend fun deleteT(transactions: Transactions)
 
+    suspend fun dropALl()
      fun getTransactions():Flow<List<Transactions>>
      fun getCustomTransactions(type:String):Flow<List<Transactions>>
     fun getFewCustomTransactions(typeSpend: String):Flow<List<Transactions>>

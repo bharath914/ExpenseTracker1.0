@@ -10,13 +10,16 @@ import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,13 +29,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,9 +46,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.getNumber
 import com.bharath.expensetracker.screens.homescreen.util.HomePageLists
+import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
 import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Lato_Regular
@@ -104,7 +112,10 @@ fun CustomPagerHome() {
 fun CustomListScreen(
     homePageLists: HomePageLists,
     homeViewModel: HomeViewModel = hiltViewModel(),
+
 ) {
+    val settingsVm:SettingsVm = hiltViewModel()
+    var colorblock by remember{ mutableStateOf(! settingsVm.colorBlocks.value) }
     val list = homeViewModel.getCustomTransaction(homePageLists.keyWord)
         .collectAsState(initial = emptyList())
 
@@ -139,7 +150,12 @@ fun CustomListScreen(
                         val modifier = Modifier.graphicsLayer(
                             scaleY = animatedProgress.value, scaleX = animatedProgress.value
                         )
-                        CardHome(detail, modifier = modifier)
+                        CardHome(detail,
+                            modifier = modifier
+
+                            ,showColorBlock =colorblock,
+                            Cons.colorMap[detail.category]!!
+                            )
 
                     }
                 }
@@ -153,7 +169,12 @@ fun CustomListScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CardHome(detail: Transactions, modifier: Modifier) {
+fun CardHome(
+    detail: Transactions,
+    modifier: Modifier,
+    showColorBlock :Boolean,
+    colorOfCategory :Color
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -183,6 +204,15 @@ fun CardHome(detail: Transactions, modifier: Modifier) {
             amount = "+${detail.amount}".uppercase()
         }
         Row(modifier = Modifier.fillMaxSize()) {
+            if (showColorBlock) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(6.dp)
+                ) {
+                    Box(modifier = Modifier.fillMaxSize().background(colorOfCategory))
+                }
+            }
             Column(
                 modifier = Modifier.weight(1.7f), verticalArrangement = Arrangement.Center
             ) {

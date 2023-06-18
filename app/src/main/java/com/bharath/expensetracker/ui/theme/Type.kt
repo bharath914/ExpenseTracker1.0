@@ -14,6 +14,9 @@ import com.bharath.expensetracker.R
 val Inter_Regular = FontFamily(
     Font(R.font.inter_regular)
 )
+val Allura = FontFamily(
+    Font(R.font.alluraregular)
+)
 val Inter_Light = FontFamily(
     Font(R.font.inter_light)
 )

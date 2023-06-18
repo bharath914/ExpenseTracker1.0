@@ -15,6 +15,8 @@ interface Rd_dao {
 
     @Delete
     suspend fun delete(transactions: Transactions)
+    @Query("delete from Transactions")
+    suspend fun dropAllDataRD()
 
     @Query("select * From transactions")
 

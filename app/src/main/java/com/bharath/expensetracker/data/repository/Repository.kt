@@ -16,6 +16,10 @@ class Repository    (
         dao.delete(transactions)
     }
 
+    override suspend fun dropALl() {
+        dao.dropAllData()
+    }
+
 
     override  fun getTransactions(): Flow<List<Transactions>> {
         return dao.getEveryTransactions()

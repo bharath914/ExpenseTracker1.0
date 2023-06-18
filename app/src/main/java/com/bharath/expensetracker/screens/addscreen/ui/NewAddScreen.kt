@@ -8,8 +8,9 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,17 +43,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -60,9 +57,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.R
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
+import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -77,18 +74,22 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 @Preview
 fun NewAddScreen() {
     val viewModelT: AddToDBViewModel = hiltViewModel()
+    val settingsVm: SettingsVm = hiltViewModel()
 
     Surface(color = MaterialTheme.colorScheme.surface) {
         val green1 = Color(0xC419CB55)
         val green2 = Color(0x6827CF60)
         val green3 = Color(0x2836D26B)
         var displayBox by remember { mutableStateOf(true) }
-        val restart = remember{ mutableStateOf(false) }
+        val restart = remember { mutableStateOf(false) }
 
         var showDetails by remember {
             mutableStateOf(false)
@@ -117,29 +118,39 @@ fun NewAddScreen() {
         var category by remember {
             mutableStateOf("")
         }
-        var date by remember{
+        var date by remember {
             mutableStateOf("${LocalDate.now().dayOfMonth}")
         }
-        var month by remember{
+        var month by remember {
             mutableStateOf("${LocalDate.now().month}")
         }
-        var year by remember{
+        var year by remember {
             mutableStateOf("${LocalDate.now().year}")
         }
         var time by remember {
-            mutableStateOf("${LocalTime.now().hour }"+" : "+"${LocalTime.now().minute}")
+            mutableStateOf("${LocalTime.now().hour}" + " : " + "${LocalTime.now().minute}")
         }
 
         val keyboardController = LocalSoftwareKeyboardController.current
 
         var dropExposed1 by remember { mutableStateOf(false) }
 
-        var tapToSave by remember{
+        var tapToSave by remember {
             mutableStateOf(false)
         }
+        var calendarStyleBool by remember {
+            mutableStateOf(settingsVm.monthlyCalendar.value)
+        }
+        var calendarStyle by remember {
+            mutableStateOf(CalendarStyle.WEEK)
+        }
+        if (calendarStyleBool) {
+            calendarStyle = CalendarStyle.MONTH
+        }
+
 
         val calendarState = rememberSheetState()
-        val clockState= rememberSheetState()
+        val clockState = rememberSheetState()
         val incomeListCategories = listOf(
             "Salary",
             "Business Profits",
@@ -162,7 +173,7 @@ fun NewAddScreen() {
             "Other"
         )
 
-        val makeNull by remember{
+        val makeNull by remember {
             mutableStateOf(false)
         }
 
@@ -170,8 +181,8 @@ fun NewAddScreen() {
 
 
         if (makeNull) {
-          showDetails = false
-            displayBox= false
+            showDetails = false
+            displayBox = false
         }
 
         Column(
@@ -183,7 +194,6 @@ fun NewAddScreen() {
                 exit = slideOutVertically(tween(400)) + fadeOut()
 
             ) {
-
 
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
@@ -207,7 +217,8 @@ fun NewAddScreen() {
                     Column {
 
                         Text(
-                            text = "SELECT  \n \n Income / Expense", modifier = Modifier.fillMaxWidth(),
+                            text = "SELECT  \n \n Income / Expense",
+                            modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             fontSize = 30.sp,
                             fontFamily = Inter_SemiBold,
@@ -240,7 +251,9 @@ fun NewAddScreen() {
                                     text = "Income",
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee()
                                 )
 
                             }
@@ -266,17 +279,14 @@ fun NewAddScreen() {
                                     text = "Expense",
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    maxLines = 1,
+                                    modifier = Modifier.basicMarquee()
                                 )
 
                             }
 
                         }
-//                        Box(modifier =Modifier.fillMaxWidth() , contentAlignment = BottomCenter){
-//                            Image(painter = painterResource(id = R.drawable.piggybank),
-//                                contentDescription =""
-//                            , alpha = 0.7f, modifier = Modifier.blur(2.dp))
-//                        }
                     }
                 }
 
@@ -288,9 +298,9 @@ fun NewAddScreen() {
             visible = showDetails,
 
             ) {
-            var typeSpentOrExp="Spent"
-            if (type=="Income"){
-                typeSpentOrExp ="Earned"
+            var typeSpentOrExp = "Spent"
+            if (type == "Income") {
+                typeSpentOrExp = "Earned"
             }
 
             Column(
@@ -306,21 +316,23 @@ fun NewAddScreen() {
                 ) {
 
 
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp)){
-                    Text(
-                        text = type,
+                    Box(
                         modifier = Modifier
-                            .background(
-                                brush = colorbrush,
-                                shape = RoundedCornerShape(30)
-                            )
-                            .padding(8.dp),
-                        fontSize = 22.sp,
+                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                    ) {
+                        Text(
+                            text = type,
+                            modifier = Modifier
+                                .background(
+                                    brush = colorbrush,
+                                    shape = RoundedCornerShape(30)
+                                )
+                                .padding(8.dp),
+                            fontSize = 22.sp,
 
-                    )
-                }
+                            )
+                    }
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 OutlinedTextField(value = nameOfPay, onValueChange = {
@@ -331,7 +343,10 @@ fun NewAddScreen() {
 
 
                     label = {
-                        Text(text = "How do you $typeSpentOrExp it", color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            text = "How do you $typeSpentOrExp it",
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
 
                 )
@@ -343,12 +358,16 @@ fun NewAddScreen() {
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()}),
+                        keyboardController?.hide()
+                    }),
                     label = {
-                        Text(text = "Enter Amount in $typeSpentOrExp Inr", color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            text = "Enter Amount in $typeSpentOrExp Inr",
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
 
-                )
+                    )
                 Spacer(modifier = Modifier.height(30.dp))
 
 
@@ -364,7 +383,10 @@ fun NewAddScreen() {
                             category = it
                         },
                         placeholder = {
-                            Text(text = "Select any Category",color=MaterialTheme.colorScheme.primary)
+                            Text(
+                                text = "Select any Category",
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(),
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropExposed1) },
@@ -379,7 +401,7 @@ fun NewAddScreen() {
                     ) {
                         if (type == "Expense") {
 
-                            expenseListCategories.forEachIndexed {index ,it->
+                            expenseListCategories.forEachIndexed { index, it ->
                                 DropdownMenuItem(text = {
                                     androidx.compose.material.Text(
                                         text = it,
@@ -400,7 +422,7 @@ fun NewAddScreen() {
                                     )
                                 }, onClick = {
                                     category = it
-                                    dropExposed1 = ! dropExposed1
+                                    dropExposed1 = !dropExposed1
                                 })
                             }
 
@@ -409,8 +431,8 @@ fun NewAddScreen() {
 
                 }
                 Spacer(modifier = Modifier.height(30.dp))
-                    Row(modifier=Modifier.fillMaxWidth(0.8f)) {
-                        
+                Row(modifier = Modifier.fillMaxWidth(0.8f)) {
+
 
                     Row(modifier = Modifier.fillMaxWidth(0.5f)) {
 
@@ -420,7 +442,7 @@ fun NewAddScreen() {
                             Text(
                                 text = "Date : ${date}",
                                 textAlign = TextAlign.Start,
-                                modifier = Modifier.padding(start = 15.dp,),
+                                modifier = Modifier.padding(start = 15.dp),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -432,40 +454,39 @@ fun NewAddScreen() {
                             )
                         }
                     }
-                        OutlinedButton(
-                            onClick = {
-                                      calendarState.show()
-                            }
-                            , colors = ButtonDefaults.outlinedButtonColors(),
-                            modifier = Modifier.align(CenterVertically)
-                        ) {
-                            Text(text = "Change Time")
-                        }
-
+                    OutlinedButton(
+                        onClick = {
+                            calendarState.show()
+                        }, colors = ButtonDefaults.outlinedButtonColors(),
+                        modifier = Modifier.align(CenterVertically)
+                    ) {
+                        Text(text = "Change Time", modifier = Modifier.basicMarquee(), maxLines = 1)
                     }
+
+                }
                 Spacer(modifier = Modifier.height(30.dp))
 
                 var txt by remember {
                     mutableStateOf("")
                 }
-                 txt=   if (tapToSave)"Done" else "Tap to Save"
+                txt = if (tapToSave) "Done" else "Tap to Save"
 
-                 var notnull by remember{
-                     mutableStateOf(true)
-                 }
+                var notnull by remember {
+                    mutableStateOf(true)
+                }
 
 
-                notnull=amountInInr!="" && nameOfPay!="" && category!=""
+                notnull = amountInInr != "" && nameOfPay != "" && category != ""
 
                 AnimatedVisibility(visible = notnull) {
 
-                    val         coroutine= rememberCoroutineScope()
+                    val coroutine = rememberCoroutineScope()
 
                     OutlinedButton(
                         onClick = {
 
                             tapToSave = true
-                            val transactionDetail= Transactions(
+                            val transactionDetail = Transactions(
                                 descriptionOfPayment = nameOfPay,
                                 amount = amountInInr.toFloatOrNull()!!,
                                 type = type,
@@ -478,9 +499,8 @@ fun NewAddScreen() {
                             viewModelT.saveToDb(transactionDetail)
                             coroutine.launch {
                                 delay(800)
-                                restart.value =true
+                                restart.value = true
                             }
-
 
 
                         }, modifier = Modifier.animateContentSize(
@@ -496,7 +516,7 @@ fun NewAddScreen() {
                     }
                 }
             }
-            AnimatedVisibility(visible = restart.value){
+            AnimatedVisibility(visible = restart.value) {
                 NewAddScreen()
             }
 
@@ -518,30 +538,30 @@ fun NewAddScreen() {
                 state = calendarState,
                 config = CalendarConfig(
 //                            CalendarStyle.MONTH,
-                    CalendarStyle.WEEK,
+                    calendarStyle,
                     monthSelection = false,
                 ),
                 selection = CalendarSelection.Date { dat ->
-                    val dates="${dat.dayOfMonth}"
-                    date=dates
-                    month="${dat.month}"
-                    year="${dat.year}"
+                    val dates = "${dat.dayOfMonth}"
+                    date = dates
+                    month = "${dat.month}"
+                    year = "${dat.year}"
 
                     clockState.show()
 
                 })
             ClockDialog(
                 state = clockState,
-                config= ClockConfig(
+                config = ClockConfig(
                     defaultTime = LocalTime.now()
                 ),
 
-                selection = ClockSelection.HoursMinutes{ hours, minutes ->
-                    val timeS="$hours h: $minutes m"
-                    time=timeS
+                selection = ClockSelection.HoursMinutes { hours, minutes ->
+                    val timeS = "$hours h: $minutes m"
+                    time = timeS
 
 
-                } )
+                })
 
         }
     }

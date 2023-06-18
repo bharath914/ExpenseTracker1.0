@@ -90,7 +90,8 @@ fun HomeScreen(
             },
             onClick = { onclick() },
             modifier = Modifier.padding(bottom = 55.dp),
-            shape = CircleShape
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primary
         )
     }, floatingActionButtonPosition = FabPosition.End)
     { it ->

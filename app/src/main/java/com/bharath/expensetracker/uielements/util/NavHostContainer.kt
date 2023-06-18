@@ -9,6 +9,7 @@ import com.bharath.expensetracker.screens.addscreen.ui.NewAddScreen
 import com.bharath.expensetracker.screens.allTransactionsScreen.ui.AllTransactionsScreen
 import com.bharath.expensetracker.screens.graphscreen.ui.GraphScreen
 import com.bharath.expensetracker.screens.homescreen.ui.HomeScreen
+import com.bharath.expensetracker.screens.settings.ui.SettingsPage
 
 
 @Composable
@@ -20,16 +21,26 @@ fun NavHostContainer(
         startDestination = "home",
         builder = {
             composable("home") {
-                HomeScreen(){navHostController.navigate("add")}
+                HomeScreen(onclick = {navHostController.navigate("add")})
+
             }
             composable("graph") {
                 GraphScreen()
+
             }
             composable("add") {
                 NewAddScreen()
+
+
             }
             composable("profile") {
                 AllTransactionsScreen()
+
+
+            }
+            composable("Settings"){
+                SettingsPage()
+
             }
 
 
