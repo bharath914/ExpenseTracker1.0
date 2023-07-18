@@ -39,16 +39,32 @@ interface DaoDb
     @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY id DESC LIMIT 7")
     fun getFewCustomTransactions(typeSpend: String):Flow<List<Transactions>>
 
+
+
+
+    @Query("SELECT Month FROM transactions ")
+    fun getMonthsActive():Flow<List<String>>
+
+
+    @Query("SELECT SUM(Amount)  FROM transactions where Type =:typeSpend GROUP BY Month ")
+    fun getMonthlySum(typeSpend: String):Flow<List<Float>>
+
+//    @Query("SELECT SUM(Amount) ,Month FROM transactions where Type =:typeSpend GROUP BY Month ")
+//    fun getMonthlySumData(typeSpend: String):Flow<Transactions>
+
+
+
+
     @Query("SELECT * FROM transactions   WHERE Type =:typeSpend Order by id DESC" )
     fun getCustomTransaction(typeSpend:String):Flow<List<Transactions>>
 
     @Query("SELECT SUM(Amount) From transactions Where Type =:exp and Month =:currentMonth")
     fun getSumOfPayments(exp:String,currentMonth:String):Flow<Float>
-    @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY Amount DESC LIMIT 1")
-    fun getHighestPayment(typeSpend: String):List<Transactions>
+    @Query("SELECT * FROM transactions WHERE Type =:typeSpend and Month =:month ORDER BY Amount DESC LIMIT 1")
+    fun getHighestPayment(typeSpend: String,month: String):List<Transactions>
 
-    @Query("SELECT * FROM transactions WHERE Type =:typeSpend ORDER BY Amount ASC LIMIT 1")
-    fun getLowestPayment(typeSpend: String):List<Transactions>
+    @Query("SELECT * FROM transactions WHERE Type =:typeSpend and Month =:month ORDER BY Amount ASC LIMIT 1")
+    fun getLowestPayment(typeSpend: String,month: String):List<Transactions>
 
 
 

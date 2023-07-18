@@ -19,28 +19,32 @@ import javax.inject.Inject
 class SettingsVm @Inject constructor(
     private val dataStorePref: DataStorePref,
     private val repository: RepositoryInterface,
-    private val rdRepo: Rd_REpo
+    private val rdRepo: Rd_REpo,
 ) : ViewModel() {
 
     private var _amoledTheme = mutableStateOf(false)
 
-    val amoledTheme : State<Boolean> =_amoledTheme
+    val amoledTheme: State<Boolean> = _amoledTheme
 
     private var _monthlyCalendar = mutableStateOf(false)
 
-    val monthlyCalendar : State<Boolean> =_monthlyCalendar
-     private var _ColorBlocks = mutableStateOf(false)
+    val monthlyCalendar: State<Boolean> = _monthlyCalendar
+    private var _ColorBlocks = mutableStateOf(false)
 
-    val colorBlocks : State<Boolean> = _ColorBlocks
+    val colorBlocks: State<Boolean> = _ColorBlocks
 
+
+    private var _pagerOption = mutableStateOf(false)
+
+    val pagerOption: State<Boolean> = _pagerOption
 
 
     private var _getThemeColor = mutableStateOf(Cons.defaultColorSchme)
 
-    val getThemeColor : State<ColorSchemes> =_getThemeColor
+    val getThemeColor: State<ColorSchemes> = _getThemeColor
 
     init {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
 
             dataStorePref.getAmoledStatus().collectLatest {
                 _amoledTheme.value = it
@@ -54,9 +58,9 @@ class SettingsVm @Inject constructor(
         }
 
 
-        viewModelScope.launch (Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
 
-            dataStorePref.readCalendarStyle().collectLatest {boo->
+            dataStorePref.readCalendarStyle().collectLatest { boo ->
                 _monthlyCalendar.value = boo
             }
         }
@@ -65,52 +69,48 @@ class SettingsVm @Inject constructor(
                 _ColorBlocks.value = it
             }
         }
+        viewModelScope.launch (Dispatchers.IO){
+            dataStorePref.readPagerOption().collectLatest {
+                _pagerOption.value = it
+            }
+        }
 
 
     }
 
-    fun saveColorBlockState(bool: Boolean){
-        viewModelScope.launch (Dispatchers.IO){
+    fun saveColorBlockState(bool: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
             dataStorePref.colorBlock(bool)
         }
     }
 
-    fun saveCalendarState(bool:Boolean){
+    fun saveCalendarState(bool: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStorePref.saveCalendarStyle(bool)
         }
     }
 
+    fun savePagerOption(bool: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStorePref.savePagerOption(bool = bool)
+        }
+    }
 
-
-
-    fun saveAmoledStatus(bool:Boolean){
-        viewModelScope.launch (Dispatchers.IO){
+    fun saveAmoledStatus(bool: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
             dataStorePref.amoledTheme(bool)
         }
     }
-    fun dropAllData(){
-        viewModelScope.launch (Dispatchers.IO){
+
+    fun dropAllData() {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.dropALl()
         }
-        viewModelScope.launch (Dispatchers.IO)
+        viewModelScope.launch(Dispatchers.IO)
         {
             repository.dropALl()
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     fun saveCustomColor(num: Int) {
@@ -118,7 +118,6 @@ class SettingsVm @Inject constructor(
             dataStorePref.saveColor(num)
         }
     }
-
 
 
 }

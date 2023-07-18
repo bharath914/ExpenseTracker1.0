@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.data.model.Transactions
+import com.bharath.expensetracker.screens.addscreen.cleanFloatingNumberString
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
 import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
@@ -138,7 +139,7 @@ fun NewAddScreen() {
         var tapToSave by remember {
             mutableStateOf(false)
         }
-        var calendarStyleBool by remember {
+        val calendarStyleBool by remember {
             mutableStateOf(settingsVm.monthlyCalendar.value)
         }
         var calendarStyle by remember {
@@ -440,7 +441,7 @@ fun NewAddScreen() {
 
 
                             Text(
-                                text = "Date : ${date}",
+                                text = "Date : $date",
                                 textAlign = TextAlign.Start,
                                 modifier = Modifier.padding(start = 15.dp),
                                 color = MaterialTheme.colorScheme.onBackground
@@ -475,6 +476,7 @@ fun NewAddScreen() {
                     mutableStateOf(true)
                 }
 
+                var formattedNumber = 0f
 
                 notnull = amountInInr != "" && nameOfPay != "" && category != ""
 
@@ -485,10 +487,14 @@ fun NewAddScreen() {
                     OutlinedButton(
                         onClick = {
 
+
                             tapToSave = true
+                            formattedNumber = cleanFloatingNumberString(amountInInr)!!
+
+
                             val transactionDetail = Transactions(
                                 descriptionOfPayment = nameOfPay,
-                                amount = amountInInr.toFloatOrNull()!!,
+                                amount = formattedNumber,
                                 type = type,
                                 category = category,
                                 time = time,

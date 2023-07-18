@@ -20,6 +20,14 @@ class Repository    (
         dao.dropAllData()
     }
 
+    override suspend fun getMonthsActive(): Flow<List<String>> {
+       return dao.getMonthsActive()
+    }
+
+    override suspend fun getMonthlySum(type: String): Flow<List<Float>> {
+            return dao.getMonthlySum(type)
+    }
+
 
     override  fun getTransactions(): Flow<List<Transactions>> {
         return dao.getEveryTransactions()
@@ -41,12 +49,12 @@ class Repository    (
         return dao.checkDbiSEmptyOrNot(type)
     }
 
-    override suspend fun getHighestPayment(type: String): List<Transactions>  {
-        return dao.getHighestPayment(type)
+    override suspend fun getHighestPayment(type: String,month: String): List<Transactions>  {
+        return dao.getHighestPayment(type,month)
     }
 
-    override suspend fun getLowestPayment(type: String): List<Transactions> {
-        return dao.getLowestPayment(type)
+    override suspend fun getLowestPayment(type: String,month: String): List<Transactions> {
+        return dao.getLowestPayment(type,month)
     }
 
     override suspend fun getCategorySum(category: String, month: String,type: String): Float {

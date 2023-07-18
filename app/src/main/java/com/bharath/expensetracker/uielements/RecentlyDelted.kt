@@ -28,7 +28,7 @@ fun RecentlyDeleted() {
         Column {
             Spacer(modifier = Modifier.height(25.dp))
             Text(
-                text = "Dust Bin is Clear",
+                text = "Bin is Clear",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,

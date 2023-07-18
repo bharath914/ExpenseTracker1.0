@@ -39,7 +39,7 @@ fun BottomNavigationBarCus(
 
                 },
                 label ={
-                    Text(text = it.label, color = MaterialTheme.colorScheme.primary, maxLines = 1, modifier = Modifier.basicMarquee())
+                        Text(text = it.label, color = MaterialTheme.colorScheme.primary, maxLines = 1, modifier = Modifier.basicMarquee())
 
 
                     },

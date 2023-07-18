@@ -61,7 +61,7 @@ object DataBaseModule{
   @Singleton
     @Provides
     fun provideSettingViewModel(dataStorePref: DataStorePref,repositoryInterface: RepositoryInterface,rdRepo: Rd_REpo): SettingsVm =
-        SettingsVm(dataStorePref,repositoryInterface,rdRepo)
+        SettingsVm(dataStorePref,repositoryInterface,rdRepo )
 
 
 
