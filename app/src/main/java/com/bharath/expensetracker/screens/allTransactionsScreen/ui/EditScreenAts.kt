@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
+import com.bharath.expensetracker.screens.addscreen.cleanFloatingNumberString
 import com.bharath.expensetracker.screens.addscreen.ui.CustomDialog
 import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
@@ -366,9 +367,10 @@ fun EditScreenAts(t: Transactions,onclick:() ->Unit) {
         }
         if (clickToSave.value) {
             t.id?.let {
+                var cleanF= cleanFloatingNumberString(valueRupees)
                 OnclickSaverAts(
                     descriptionOfPayment = nameOfPay,
-                    amount = valueRupees,
+                    amount = cleanF!!,
                     type = type,
                     category = category,
                     time = time,
@@ -407,7 +409,7 @@ fun Preview() {
 @Composable
 private fun OnclickSaverAts(
     descriptionOfPayment: String,
-    amount: String,
+    amount: Float,
     type: String,
     category: String,
     time: String,
@@ -419,10 +421,10 @@ private fun OnclickSaverAts(
 
     val viewModelT: AddToDBViewModel = hiltViewModel()
 
-    if (descriptionOfPayment != "" && amount != "" && type != "" && category != "") {
+    if (descriptionOfPayment != "" && amount != null && type != "" && category != "") {
         val transactionDetail = Transactions(
             descriptionOfPayment = descriptionOfPayment,
-            amount = amount.toFloat(),
+            amount = amount,
             type = type,
             category = category,
             time = time,

@@ -21,6 +21,7 @@ class DataStorePref(context: Context) {
         val calendarStyle = booleanPreferencesKey(name = "CalendarStyle")
         val amoledTheme = booleanPreferencesKey(name = "Amoled")
         val disableColorBlock = booleanPreferencesKey(name = "ColorBlock")
+        val pagerOption= booleanPreferencesKey(name = "PagerOptions")
     }
 
     private val dataStore = context.dataStore
@@ -33,10 +34,17 @@ class DataStorePref(context: Context) {
         }
     }
 
+    suspend fun savePagerOption(bool: Boolean){
+        dataStore.edit {
+            it[PreferencesKey.pagerOption] = bool
+        }
+    }
+
     suspend fun saveCalendarStyle(bool: Boolean) {
         dataStore.edit {
             it[PreferencesKey.calendarStyle] = bool
         }
+
     }
 
     suspend fun amoledTheme(bool: Boolean) {
@@ -51,6 +59,18 @@ class DataStorePref(context: Context) {
         }
     }
 
+    fun  readPagerOption():Flow<Boolean>{
+        return  dataStore.data.catch {
+            if (it is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }.map {
+            val option = it[PreferencesKey.pagerOption] ?: true
+            option
+        }
+    }
     fun readCalendarStyle(): Flow<Boolean> {
         return dataStore.data.catch {
             if (it is IOException) {

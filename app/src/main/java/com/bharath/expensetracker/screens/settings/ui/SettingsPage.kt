@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,8 +67,9 @@ fun SettingsPage(
         Color(0xCDF0EEEE)
     } else Color(0xD4131212)
 
-    var showALertBox by remember { mutableStateOf(false) }
+    var showAlertBox by remember { mutableStateOf(false) }
 
+    val scope = rememberCoroutineScope()
     Surface(color = MaterialTheme.colorScheme.surface) {
 
         Column(
@@ -108,6 +110,7 @@ fun SettingsPage(
                 var checked2 by remember { mutableStateOf(settingsVm.monthlyCalendar.value) }
 
                 var disableColor by remember { mutableStateOf(settingsVm.colorBlocks.value) }
+                var scrollingOptions by remember { mutableStateOf(settingsVm.pagerOption.value) }
 
                 Column {
 
@@ -302,6 +305,50 @@ fun SettingsPage(
                         bottom = 15.dp
                     )
                 ) {
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth(),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                    ) {
+//                        Text(
+//                            text = buildAnnotatedString {
+//                                append("Scrolling ")
+//                                withStyle(
+//                                    style = SpanStyle(color = MaterialTheme.colorScheme.primary)
+//                                ) {
+//                                    append(" Tabs")
+//                                }
+//                            },
+//                            fontSize = 22.sp,
+//                            fontFamily = Inter_SemiBold,
+//                            color = txtColor
+//                        )
+//                        Switch(
+//                            checked = scrollingOptions,
+//                            onCheckedChange = {
+//                                settingsVm.savePagerOption(it)
+//                                scope.launch {
+//
+//                                scrollingOptions = !scrollingOptions
+//                                }
+//
+//                            },
+//                            colors = SwitchDefaults.colors()
+//                        )
+//
+//                    }
+
+                }
+//                Divider()
+                Column(
+                    modifier = Modifier.padding(
+                        start = 25.dp,
+                        end = 25.dp,
+                        top = 15.dp,
+                        bottom = 15.dp
+                    )
+                ) {
 
 
                     Row(
@@ -323,10 +370,11 @@ fun SettingsPage(
                                 }
                             },
                             fontSize = 22.sp,
-                            fontFamily = Inter_SemiBold
+                            fontFamily = Inter_SemiBold,
+                            color = txtColor
                         )
                         IconButton(onClick = {
-                            showALertBox = !showALertBox
+                            showAlertBox = !showAlertBox
 
                         }) {
                             Icon(
@@ -350,26 +398,26 @@ fun SettingsPage(
 
         }
 
-        AnimatedVisibility(visible = showALertBox) {
+        AnimatedVisibility(visible = showAlertBox) {
 
-            var show by remember{ mutableStateOf(false) }
-            LaunchedEffect(key1 = true ){
+            var show by remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = true) {
                 delay(5000)
                 show = true
             }
             AlertDialog(onDismissRequest = {
-                showALertBox = !showALertBox
+                showAlertBox = !showAlertBox
             }, confirmButton = {
 
-                AnimatedVisibility(visible  =show ) {
+                AnimatedVisibility(visible = show) {
 
 
-                TextButton(onClick = {
-                    settingsVm.dropAllData()
-                    showALertBox  = !showALertBox
-                }) {
-                    Text(text = "Confirm ! ", color = Color.Red)
-                }
+                    TextButton(onClick = {
+                        settingsVm.dropAllData()
+                        showAlertBox = !showAlertBox
+                    }) {
+                        Text(text = "Confirm ! ", color = Color.Red)
+                    }
                 }
             },
 
@@ -385,9 +433,8 @@ fun SettingsPage(
 
                     Text(
                         text = "Once The Data Is Deleted " + "\n" +
-                                "It Can't Be Recovered Back !" +"\n"+
-                                "After 5 Seconds Confirm Button Will be Shown"
-                        ,
+                                "It Can't Be Recovered Back !" + "\n" +
+                                "After 5 Seconds Confirm Button Will be Shown",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(),
                         fontSize = 15.sp,

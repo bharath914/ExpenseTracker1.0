@@ -1,11 +1,6 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.ui
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,7 +55,6 @@ import kotlinx.coroutines.launch
 
 
 @OptIn(
-    ExperimentalAnimationApi::class,
     ExperimentalPagerApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalMaterialApi::class
@@ -74,12 +68,18 @@ fun AllTransactionsScreen(
     val colorBlock by remember {
         mutableStateOf(!settingsVm.colorBlocks.value)
     }
+    val scrollOptions by remember {
+        mutableStateOf(settingsVm.pagerOption.value)
+    }
     val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     var shouldEdit by remember { mutableStateOf(false) }
 
 
-    val list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
+    var list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
+
+
+
     val list2 = atsViewModel.getAllExpensesAts().collectAsState(initial = emptyList()).value
     val list3 = atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
     val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
@@ -140,13 +140,10 @@ fun AllTransactionsScreen(
 
 
                                 Text(
-                                    text = "History",
-                                    fontSize = 55.sp,
-                                    fontFamily = Allura,
-                                    letterSpacing = 1.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier
-                                        .padding(1.dp)
+                                    text = "History", fontSize = 55.sp, fontFamily = Allura,
+
+                                    color = MaterialTheme.colorScheme.primary, modifier = Modifier
+
                                         .weight(6f)
 
 
@@ -155,6 +152,14 @@ fun AllTransactionsScreen(
 
                             }
                         }
+//                        Text(
+//                            text = "If it lags, Turn off  Scrollable tabs in settings ",
+//                            fontSize = 12.sp,
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .alpha(0.6f)
+//                        )
+
 
                         ScrollableTabRow(
 
@@ -208,19 +213,20 @@ fun AllTransactionsScreen(
                         HorizontalPager(
                             count = 4, modifier = Modifier.fillMaxSize(), state = pagerState,
 
-                            verticalAlignment = Alignment.Top
+                            verticalAlignment = Alignment.Top,
+
                         ) {
 
 
-                            AnimatedContent(targetState = pagerState.currentPage, transitionSpec = {
-                                slideInVertically() with fadeOut()
-
-
-                            }
-
-                            )
-
-                            {
+//                            AnimatedContent(targetState = pagerState.currentPage, transitionSpec = {
+//                                fadeIn()with fadeOut()
+//
+//
+//                            }
+//
+//                            )
+//
+//                            {
 
 
                                 when (currentPage) {
@@ -236,7 +242,7 @@ fun AllTransactionsScreen(
 
                                             LazyColumn {
 
-                                                items(list1) {it->
+                                                items(list1) { it ->
 //
                                                     val modifier = Modifier
                                                     AtsCard(
@@ -311,7 +317,7 @@ fun AllTransactionsScreen(
 
                                             LazyColumn {
 
-                                                items(list3) {it->
+                                                items(list3) { it ->
 //
                                                     val modifier = Modifier
                                                     AtsCard(
@@ -340,7 +346,7 @@ fun AllTransactionsScreen(
                                     }
                                 }
 
-                            }
+//                            }
                         }
                     }
 

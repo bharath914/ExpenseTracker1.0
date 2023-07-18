@@ -1,5 +1,7 @@
 package com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bharath.expensetracker.data.deleted.Rd_REpo
@@ -8,7 +10,6 @@ import com.bharath.expensetracker.data.repository.RepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +27,9 @@ class ATSViewModel
         private set
     var allPays: Flow<List<Transactions>> = emptyFlow()
         private set
+
+    private var _allPaysTcs = mutableStateOf(emptyList<Transactions>())
+    var allPaysTcs : State<List<Transactions>> = _allPaysTcs
     var RdAllPays: Flow<List<Transactions>> = emptyFlow()
         private set
 
@@ -36,17 +40,20 @@ class ATSViewModel
 
 
     private val job = viewModelScope.launch(Dispatchers.IO) {
+//     repository.getTransactions().collectLatest {
+//         _allPaysTcs.value = it
+//     }
         allPays = repository.getTransactions()
     }
 
     init {
 
         job.start()
-        viewModelScope.launch(Dispatchers.IO){
-             allPays.collectLatest {
-                list=it
-            }
-        }
+//        viewModelScope.launch(Dispatchers.IO){
+//             allPays.collectLatest {
+//                list=it
+//            }
+//        }
         viewModelScope.launch(Dispatchers.IO) {
             allExpenses = repository.getCustomTransactions("Expense")
         }

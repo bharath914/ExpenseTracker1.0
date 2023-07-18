@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,10 +51,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,12 +109,20 @@ fun HomeScreen(
 
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             val scope = rememberCoroutineScope()
-            val currentMonth = "${LocalDate.now().month}"
+            var currentMonth by remember{
+                mutableStateOf("${LocalDate.now().month}" )}
             val list = listOf("FeedBack", "Rate us on PlayStore")
             var gotoSelected by remember { mutableStateOf(false) }
             val selectedItem = remember {
                 mutableStateOf("")
 
+            }
+            var txtColor by remember {
+                mutableStateOf(Color(0xBA141414))
+            }
+
+            if (isSystemInDarkTheme()){
+                txtColor = Color(0xC6F1F1F1)
             }
 
             if (gotoSelected) {
@@ -202,7 +215,12 @@ fun HomeScreen(
                                     fontSize = 40.sp,
                                     fontFamily = Inter_SemiBold
                                 )
-                                Text(text = "Month : $currentMonth ")
+                                Text(text = buildAnnotatedString {
+                                    append("Current Month : ")
+                                    withStyle(style = SpanStyle(color = txtColor)){
+                                        append(currentMonth)
+                                    }
+                                })
 
 
                             }

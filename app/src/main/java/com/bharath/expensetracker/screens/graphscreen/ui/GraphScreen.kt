@@ -55,7 +55,8 @@ fun GraphScreen(
 
             HorizontalPager(
                 count = 3,
-                state = pagerState
+                state = pagerState,
+                itemSpacing = 50.dp
             ) {
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
@@ -65,6 +66,7 @@ fun GraphScreen(
                     activeColor = MaterialTheme.colorScheme.primary,
                     inactiveColor = MaterialTheme.colorScheme.inverseSurface
                 )
+
                 when (pagerState.currentPage) {
                     0 -> {
                         GraphScreen1(graphViewModel = graphViewModel)
