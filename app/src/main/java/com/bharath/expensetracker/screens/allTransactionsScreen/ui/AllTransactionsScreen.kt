@@ -16,6 +16,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -76,13 +77,15 @@ fun AllTransactionsScreen(
     var shouldEdit by remember { mutableStateOf(false) }
 
 
-    var list1 = atsViewModel.allPays.collectAsState(initial = emptyList()).value
+    var list1 = atsViewModel.allTcs.collectAsState(initial = emptyList()).value
 
 
 
-    val list2 = atsViewModel.getAllExpensesAts().collectAsState(initial = emptyList()).value
-    val list3 = atsViewModel.getAllIncomeAts().collectAsState(initial = emptyList()).value
+
+    val list2 = atsViewModel.dynamicExpenseList.collectAsState(initial = emptyList<Transactions>()).value
+    val list3 = atsViewModel.allIncomes.collectAsState(initial = emptyList()).value
     val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
+    val isLoadingExpenses = atsViewModel.collectall.collectAsState()
 //    listTs.add(list1[0])
 
     var t by remember {
@@ -268,6 +271,12 @@ fun AllTransactionsScreen(
 
                                     1 -> {
 //                                        CustomList(list = list2)
+                                        tabIndex = currentPage
+                                        if (isLoadingExpenses.value){
+                                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                                LinearProgressIndicator()
+                                            }
+                                        }else{
                                         if (list2.isEmpty()) {
 //                                        CustomList(list = list1)
                                             AnimatedVisibility(visible = true) {
@@ -301,7 +310,8 @@ fun AllTransactionsScreen(
 
                                             }
                                         }
-                                        tabIndex = currentPage
+
+                                    }
                                     }
 
                                     2 -> {

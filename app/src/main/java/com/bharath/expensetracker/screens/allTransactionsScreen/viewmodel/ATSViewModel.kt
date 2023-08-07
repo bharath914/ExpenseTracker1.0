@@ -9,8 +9,20 @@ import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.data.repository.RepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,10 +33,12 @@ class ATSViewModel
     private val rd_repository: Rd_REpo
 ) : ViewModel() {
 
-    var allExpenses: Flow<List<Transactions>> = emptyFlow()
-        private set
-    var allIncomes: Flow<List<Transactions>> = emptyFlow()
-        private set
+    private val _allExpenses = MutableStateFlow(listOf<Transactions>())
+    var allExpenses: StateFlow<List<Transactions>> = _allExpenses
+
+    private val _allIncomes = MutableStateFlow(listOf<Transactions>())
+    var allIncomes: Flow<List<Transactions>> = _allIncomes
+
     var allPays: Flow<List<Transactions>> = emptyFlow()
         private set
 
@@ -32,7 +46,12 @@ class ATSViewModel
     var allPaysTcs : State<List<Transactions>> = _allPaysTcs
     var RdAllPays: Flow<List<Transactions>> = emptyFlow()
         private set
+    private val _allTCS = MutableStateFlow(listOf<Transactions>())
+    var allTcs: Flow<List<Transactions>> = _allTCS
 
+
+    private var _collectall_= MutableStateFlow(false)
+    var collectall  = _collectall_.asStateFlow()
 
     var list:List<Transactions> = emptyList()
 
@@ -43,23 +62,45 @@ class ATSViewModel
 //     repository.getTransactions().collectLatest {
 //         _allPaysTcs.value = it
 //     }
-        allPays = repository.getTransactions()
+//        allPays = repository.getTransactions()
+    _allTCS.emitAll(repository.getTransactions())
     }
 
+
+    @OptIn(FlowPreview::class)
+    val dynamicExpenseList = _allTCS.onEach {
+_collectall_.tryEmit(true)
+    }.debounce(200)
+        .combine(_allTCS){tcs , e->
+            tcs.filter {
+                it.type == "Expense"
+            }
+        }
+        .onEach { _collectall_.update { false } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1200),_allTCS.value)
     init {
 
         job.start()
-//        viewModelScope.launch(Dispatchers.IO){
-//             allPays.collectLatest {
-//                list=it
-//            }
+        viewModelScope.launch(Dispatchers.IO){
+
+             _allTCS.collectLatest {
+
+                 if (it.isNotEmpty()){_collectall_.tryEmit(true)}
+            }
+        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            if (collectall_.value){
+//            _allTCS.collectLatest {
+//
+//               _allExpenses.tryEmit(  it.filter {
+//                   it.type == "Expense"
+//               })
+//                _allIncomes.tryEmit(it.filter {
+//                    it.type=="Income"
+//                })
+//            }}
 //        }
-        viewModelScope.launch(Dispatchers.IO) {
-            allExpenses = repository.getCustomTransactions("Expense")
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            allIncomes = repository.getCustomTransactions("Income")
-        }
+
         viewModelScope.launch(Dispatchers.IO){
             RdAllPays=rd_repository.getAllData()
         }
