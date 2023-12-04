@@ -9,13 +9,14 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
-import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.viewmodel.HomeViewModel
+import com.bharath.expensetracker.presentation.uielements.util.BottomNavigationBarCus
+import com.bharath.expensetracker.presentation.uielements.util.NavHostContainer
 import com.bharath.expensetracker.ui.theme.CustomExpenseTrackerTheme
 import com.bharath.expensetracker.ui.theme.ExpenseTrackerTheme
-import com.bharath.expensetracker.uielements.util.BottomNavigationBarCus
-import com.bharath.expensetracker.uielements.util.NavHostContainer
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,10 +26,11 @@ import javax.inject.Inject
 @ExperimentalPagerApi
 class MainActivity : ComponentActivity() {
 
-  @Inject
-  lateinit var homeViewModel:HomeViewModel
-  @Inject
-  lateinit var settingsVm: SettingsVm
+    @Inject
+    lateinit var homeViewModel: HomeViewModel
+
+    @Inject
+    lateinit var settingsVm: SettingsVm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
@@ -40,11 +42,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            if ( settingsVm.amoledTheme.value){
-               Custom()
-            }
-            else {
-               NOnCustom()
+            if (settingsVm.amoledTheme.value) {
+                Custom()
+            } else {
+                NOnCustom()
 
             }
 
@@ -69,10 +70,12 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun Custom() {
-        CustomExpenseTrackerTheme() {
+        CustomExpenseTrackerTheme {
 
 
             val navController = rememberNavController()
+
+            val mainViewModel = hiltViewModel<MainViewModel>()
             Surface(color = MaterialTheme.colorScheme.background) {
                 Scaffold(
                     bottomBar = {
@@ -80,7 +83,8 @@ class MainActivity : ComponentActivity() {
                     }, content = {
                         NavHostContainer(
                             navHostController = navController,
-                            paddingValues = it
+                            paddingValues = it,
+                            mainViewModel
                         )
                     }
                 )
@@ -88,17 +92,23 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+
     @Composable
-    fun NOnCustom(){
+    fun NOnCustom() {
         ExpenseTrackerTheme() {
 
             val navController = rememberNavController()
+            val mainViewModel = hiltViewModel<MainViewModel>()
             Surface(color = MaterialTheme.colorScheme.background) {
-                Scaffold (
+                Scaffold(
                     bottomBar = {
                         BottomNavigationBarCus(navHostController = navController)
-                    }, content ={
-                        NavHostContainer(navHostController = navController, paddingValues =it )
+                    }, content = {
+                        NavHostContainer(
+                            navHostController = navController,
+                            paddingValues = it,
+                            mainViewModel
+                        )
                     }
                 )
             }

@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.0'
 }
 
 android {
@@ -101,4 +102,14 @@ dependencies {
     implementation "com.maxkeppeler.sheets-compose-dialogs:clock:$Cversion"
 
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
+
+
+    def lifecycle_version = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+
+
+
+    implementation("com.github.Kaaveh:sdp-compose:1.1.0")
 }

@@ -10,9 +10,9 @@ import com.bharath.expensetracker.data.deleted.Rd_REpo
 import com.bharath.expensetracker.data.deleted.Rd_RepoImpl
 import com.bharath.expensetracker.data.repository.Repository
 import com.bharath.expensetracker.data.repository.RepositoryInterface
-import com.bharath.expensetracker.datastore.DataStorePref
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
-import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
+import com.bharath.expensetracker.data.datastore.DataStorePref
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.viewmodel.HomeViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataBaseModule{
+object DataBaseModule {
 
     @Provides
     @Singleton
@@ -42,7 +42,7 @@ object DataBaseModule{
 
     @Provides
     @Singleton
-    fun provideRdDataBase(app: Application):RDDataBase{
+    fun provideRdDataBase(app: Application): RDDataBase {
         return Room.databaseBuilder(
             app,
             RDDataBase::class.java,
@@ -52,23 +52,27 @@ object DataBaseModule{
 
     @Singleton
     @Provides
-    fun provideRdRepository(R_db:RDDataBase):Rd_REpo =Rd_RepoImpl(R_db.daoRd)
+    fun provideRdRepository(R_db: RDDataBase): Rd_REpo = Rd_RepoImpl(R_db.daoRd)
 
     @Singleton
     @Provides
-    fun provideHomeViewModel(repositoryInterface: RepositoryInterface):HomeViewModel = HomeViewModel(repositoryInterface)
+    fun provideHomeViewModel(repositoryInterface: RepositoryInterface): HomeViewModel =
+        HomeViewModel(repositoryInterface)
 
-  @Singleton
+    @Singleton
     @Provides
-    fun provideSettingViewModel(dataStorePref: DataStorePref,repositoryInterface: RepositoryInterface,rdRepo: Rd_REpo): SettingsVm =
-        SettingsVm(dataStorePref,repositoryInterface,rdRepo )
-
+    fun provideSettingViewModel(
+        dataStorePref: DataStorePref,
+        repositoryInterface: RepositoryInterface,
+        rdRepo: Rd_REpo,
+    ): SettingsVm =
+        SettingsVm(dataStorePref, repositoryInterface, rdRepo)
 
 
     @Singleton
     @Provides
     fun provideDataStoreRepository(
-        @ApplicationContext context: Context
-    )=DataStorePref(context)
+        @ApplicationContext context: Context,
+    ) = DataStorePref(context)
 
 }
