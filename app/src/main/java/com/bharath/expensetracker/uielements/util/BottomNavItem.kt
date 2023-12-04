@@ -1,4 +1,4 @@
-package com.bharath.expensetracker.uielements
+package com.bharath.expensetracker.uielements.util
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

@@ -1,6 +1,6 @@
 package com.bharath.expensetracker.screens.addscreen.ui
 
-import androidx.compose.animation.AnimatedVisibility
+import  androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween

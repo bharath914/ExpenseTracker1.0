@@ -6,9 +6,8 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Settings
-import com.bharath.expensetracker.uielements.BottomNavItem
 
-object BottomNavConst {
+object  BottomNavConst {
     val BottomNavItems = listOf(
         BottomNavItem(
             label = "Home",

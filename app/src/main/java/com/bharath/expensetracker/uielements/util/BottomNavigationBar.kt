@@ -25,27 +25,37 @@ fun BottomNavigationBarCus(
 
         val backStackEntry by navHostController.currentBackStackEntryAsState()
 
+
         val currentRoute = backStackEntry?.destination?.route
         BottomNavConst.BottomNavItems.forEach {
-
             BottomNavigationItem(
                 selected = currentRoute == it.route,
                 onClick = {
                     navHostController.navigate(it.route)
 
+
                 },
                 icon = {
-                    Icon(imageVector = it.icon, contentDescription = it.label, tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Icon(
+                        imageVector = it.icon,
+                        contentDescription = it.label,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
 
                 },
-                label ={
-                        Text(text = it.label, color = MaterialTheme.colorScheme.primary, maxLines = 1, modifier = Modifier.basicMarquee())
+                label = {
+                    Text(
+                        text = it.label,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee()
+                    )
 
 
-                    },
-                alwaysShowLabel = false
+                },
+                alwaysShowLabel = false,
 
-            )
+                )
 
 
         }
