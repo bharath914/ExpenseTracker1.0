@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.getNumber
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.ui.components.getNumber
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Lato_Regular
 import com.bharath.expensetracker.ui.theme.Money1exp

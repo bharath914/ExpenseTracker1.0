@@ -13,9 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.screens.graphscreen.ui.screens.GraphScreen1
-import com.bharath.expensetracker.screens.graphscreen.ui.screens.GraphScreen2
-import com.bharath.expensetracker.screens.graphscreen.viewmodel.GraphViewModel
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.screens.GraphScreen1
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.screens.GraphScreen2
+import com.bharath.expensetracker.presentation.screens.graphscreen.viewmodel.GraphViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator

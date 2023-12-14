@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.common.Cons
-import com.bharath.expensetracker.screens.settings.components.ColorListItem
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.settings.components.ColorListItem
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
 import com.bharath.expensetracker.ui.theme.Allura
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import kotlinx.coroutines.delay

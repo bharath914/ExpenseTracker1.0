@@ -39,16 +39,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.AtsCard
-import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.Rd_Card
-import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
-import com.bharath.expensetracker.ui.theme.Allura
-import com.bharath.expensetracker.ui.theme.Inter_Bold
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.ui.components.AtsCard
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.ui.components.Rd_Card
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.viewmodel.ATSViewModel
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
 import com.bharath.expensetracker.presentation.uielements.NoExpense
 import com.bharath.expensetracker.presentation.uielements.NoIncome
 import com.bharath.expensetracker.presentation.uielements.NothingHere
 import com.bharath.expensetracker.presentation.uielements.RecentlyDeleted
+import com.bharath.expensetracker.ui.theme.Allura
+import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -80,9 +80,8 @@ fun AllTransactionsScreen(
     var list1 = atsViewModel.allTcs.collectAsState(initial = emptyList()).value
 
 
-
-
-    val list2 = atsViewModel.dynamicExpenseList.collectAsState(initial = emptyList<Transactions>()).value
+    val list2 =
+        atsViewModel.dynamicExpenseList.collectAsState(initial = emptyList<Transactions>()).value
     val list3 = atsViewModel.allIncomes.collectAsState(initial = emptyList()).value
     val list4 = atsViewModel.getAllRd().collectAsState(initial = emptyList()).value
     val isLoadingExpenses = atsViewModel.collectall.collectAsState()
@@ -218,7 +217,7 @@ fun AllTransactionsScreen(
 
                             verticalAlignment = Alignment.Top,
 
-                        ) {
+                            ) {
 
 
 //                            AnimatedContent(targetState = pagerState.currentPage, transitionSpec = {
@@ -232,51 +231,54 @@ fun AllTransactionsScreen(
 //                            {
 
 
-                                when (currentPage) {
-                                    0 -> {
-                                        if (list1.isEmpty()) {
+                            when (currentPage) {
+                                0 -> {
+                                    if (list1.isEmpty()) {
 //                                        CustomList(list = list1)
-                                            AnimatedVisibility(visible = true) {
+                                        AnimatedVisibility(visible = true) {
 
-                                                NothingHere()
-                                            }
-                                        } else {
-
-
-                                            LazyColumn {
-
-                                                items(list1) { it ->
-//
-                                                    val modifier = Modifier
-                                                    AtsCard(
-                                                        detail = it,
-                                                        modifier = modifier,
-                                                        onclick = {
-
-                                                            t = it
-                                                            shouldEdit = true
-                                                            scope.launch { state.show() }
-                                                        },
-                                                        colorOfCategory = Cons.colorMap[it.category]!!,
-                                                        showColorBlock = colorBlock
-                                                    )
-
-                                                }
-
-                                            }
+                                            NothingHere()
                                         }
-                                        tabIndex = currentPage
+                                    } else {
 
-                                    }
 
-                                    1 -> {
-//                                        CustomList(list = list2)
-                                        tabIndex = currentPage
-                                        if (isLoadingExpenses.value){
-                                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                                                LinearProgressIndicator()
+                                        LazyColumn {
+
+                                            items(list1) { it ->
+//
+                                                val modifier = Modifier
+                                                AtsCard(
+                                                    detail = it,
+                                                    modifier = modifier,
+                                                    onclick = {
+
+                                                        t = it
+                                                        shouldEdit = true
+                                                        scope.launch { state.show() }
+                                                    },
+                                                    colorOfCategory = Cons.colorMap[it.category]!!,
+                                                    showColorBlock = colorBlock
+                                                )
+
                                             }
-                                        }else{
+
+                                        }
+                                    }
+                                    tabIndex = currentPage
+
+                                }
+
+                                1 -> {
+//                                        CustomList(list = list2)
+                                    tabIndex = currentPage
+                                    if (isLoadingExpenses.value) {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            LinearProgressIndicator()
+                                        }
+                                    } else {
                                         if (list2.isEmpty()) {
 //                                        CustomList(list = list1)
                                             AnimatedVisibility(visible = true) {
@@ -312,49 +314,49 @@ fun AllTransactionsScreen(
                                         }
 
                                     }
-                                    }
-
-                                    2 -> {
-//                                        CustomList(list = list3)
-                                        if (list3.isEmpty()) {
-//                                        CustomList(list = list1)
-                                            AnimatedVisibility(visible = true) {
-
-                                                NoExpense()
-                                            }
-                                        } else {
-
-
-                                            LazyColumn {
-
-                                                items(list3) { it ->
-//
-                                                    val modifier = Modifier
-                                                    AtsCard(
-                                                        detail = it,
-                                                        modifier = modifier,
-                                                        onclick = {
-
-                                                            t = it
-                                                            shouldEdit = true
-                                                            scope.launch { state.show() }
-                                                        },
-                                                        colorOfCategory = Cons.colorMap[it.category]!!,
-                                                        showColorBlock = colorBlock
-                                                    )
-
-                                                }
-
-                                            }
-                                        }
-                                        tabIndex = currentPage
-                                    }
-
-                                    3 -> {
-                                        RD_CustomList(list = list4)
-                                        tabIndex = currentPage
-                                    }
                                 }
+
+                                2 -> {
+//                                        CustomList(list = list3)
+                                    if (list3.isEmpty()) {
+//                                        CustomList(list = list1)
+                                        AnimatedVisibility(visible = true) {
+
+                                            NoExpense()
+                                        }
+                                    } else {
+
+
+                                        LazyColumn {
+
+                                            items(list3) { it ->
+//
+                                                val modifier = Modifier
+                                                AtsCard(
+                                                    detail = it,
+                                                    modifier = modifier,
+                                                    onclick = {
+
+                                                        t = it
+                                                        shouldEdit = true
+                                                        scope.launch { state.show() }
+                                                    },
+                                                    colorOfCategory = Cons.colorMap[it.category]!!,
+                                                    showColorBlock = colorBlock
+                                                )
+
+                                            }
+
+                                        }
+                                    }
+                                    tabIndex = currentPage
+                                }
+
+                                3 -> {
+                                    RD_CustomList(list = list4)
+                                    tabIndex = currentPage
+                                }
+                            }
 
 //                            }
                         }

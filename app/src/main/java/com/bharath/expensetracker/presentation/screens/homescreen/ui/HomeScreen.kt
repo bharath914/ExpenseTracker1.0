@@ -63,9 +63,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.screens.allTransactionsScreen.ui.components.getNumber
-import com.bharath.expensetracker.screens.homescreen.ui.components.CustomPagerHome
-import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.ui.components.getNumber
+import com.bharath.expensetracker.presentation.screens.homescreen.ui.components.CustomPagerHome
+import com.bharath.expensetracker.presentation.screens.viewmodel.HomeViewModel
+
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.bharath.expensetracker.ui.theme.Money1exp

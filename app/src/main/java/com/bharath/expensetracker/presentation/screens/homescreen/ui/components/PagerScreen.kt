@@ -28,9 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.common.Cons
-import com.bharath.expensetracker.screens.homescreen.util.HomePageLists
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
-import com.bharath.expensetracker.screens.viewmodel.HomeViewModel
+import com.bharath.expensetracker.presentation.screens.homescreen.util.HomePageLists
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.viewmodel.HomeViewModel
+
 import com.bharath.expensetracker.presentation.uielements.NothingHere
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -86,8 +87,8 @@ fun CustomListScreen(
     homePageLists: HomePageLists,
     homeViewModel: HomeViewModel = hiltViewModel(),
 
-) {
-    val settingsVm:SettingsVm = hiltViewModel()
+    ) {
+    val settingsVm: SettingsVm = hiltViewModel()
     var colorblock by remember{ mutableStateOf(! settingsVm.colorBlocks.value) }
     val list = homeViewModel.getCustomTransaction(homePageLists.keyWord)
         .collectAsState(initial = emptyList())
@@ -107,7 +108,7 @@ fun CustomListScreen(
                 fontSize = 20.sp
             )
 
-            AnimatedContent(targetState = list.value) { l ->
+            AnimatedContent(targetState = list.value, label = "") { l ->
 
 
                 LazyColumn(modifier = Modifier.fillMaxSize()) {

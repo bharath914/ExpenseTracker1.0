@@ -38,8 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bharath.expensetracker.screens.graphscreen.ui.screens.data.Details
-import com.bharath.expensetracker.screens.graphscreen.viewmodel.GraphViewModel
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.screens.data.Details
+import com.bharath.expensetracker.presentation.screens.graphscreen.viewmodel.GraphViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 import com.bharath.expensetracker.ui.theme.Lato_Bold
 
@@ -53,8 +53,6 @@ fun GraphScreen2(
 
     ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
-
-
 
 
         Box(
@@ -71,7 +69,7 @@ fun GraphScreen2(
                 Text(
                     text = "$type Stats",
                     fontSize = 35.sp,
-                    fontFamily =  Lato_Bold,
+                    fontFamily = Lato_Bold,
                     modifier = Modifier.fillMaxWidth(),
 
                     textAlign = TextAlign.Center,
@@ -96,7 +94,7 @@ fun GraphScreen2(
                         .weight(0.45f)
                         .padding(start = 15.dp, end = 15.dp)
                 ) {
-                    Stats_List(list,graphViewModel)
+                    Stats_List(list, graphViewModel)
                 }
 
 
@@ -108,8 +106,7 @@ fun GraphScreen2(
 @Composable
 fun Stats_List(
     list: List<Details>,
-    graphViewModel: GraphViewModel
-
+    graphViewModel: GraphViewModel,
 
 
     ) {
@@ -121,9 +118,9 @@ fun Stats_List(
     ) {
 
 
-         LazyColumn {
+        LazyColumn {
             items(list) { it ->
-                Stats_List_item(details = it, graphViewModel =graphViewModel )
+                Stats_List_item(details = it, graphViewModel = graphViewModel)
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -135,7 +132,7 @@ fun Stats_List(
 @Composable
 fun Stats_List_item(
     details: Details,
-    graphViewModel: GraphViewModel
+    graphViewModel: GraphViewModel,
 ) {
 
     var animationPlayed by remember { mutableStateOf(false) }
@@ -162,7 +159,8 @@ fun Stats_List_item(
                     .background(color = details.color, shape = RoundedCornerShape(30))
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = details.name,
+            Text(
+                text = details.name,
                 color = MaterialTheme.colorScheme.inverseSurface,
                 modifier = Modifier
                     .weight(3f)
@@ -172,7 +170,8 @@ fun Stats_List_item(
 
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = "₹ ${graphViewModel.getNumber(details.Value.toString()) }",
+            Text(
+                text = "₹ ${graphViewModel.getNumber(details.Value.toString())}",
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .weight(2f)
@@ -193,7 +192,7 @@ fun Stats_(
     list: List<Details>,
     totalSum: Float = 0f,
 
-) {
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -201,16 +200,16 @@ fun Stats_(
     ) {
 
 
-        val fllist:ArrayList<Float> = ArrayList()
+        val fllist: ArrayList<Float> = ArrayList()
 
-        list.forEachIndexed{i,item->
-            fllist.add(i,  item.Value /totalSum)
+        list.forEachIndexed { i, item ->
+            fllist.add(i, item.Value / totalSum)
         }
 
         LazyColumn {
-            itemsIndexed(list) { ind,item: Details ->
+            itemsIndexed(list) { ind, item: Details ->
                 var fl: Float = fllist[ind]
-                if (1.0 - fl >= 0.2){
+                if (1.0 - fl >= 0.2) {
                     fl += 0.2f
                 }
                 IndividualStat(details = item, width = fl)
@@ -229,7 +228,7 @@ fun IndividualStat(
     details: Details,
     width: Float,
 
-) {
+    ) {
     val animationPlayed = remember {
         mutableStateOf(false)
     }
@@ -244,32 +243,32 @@ fun IndividualStat(
 
 
 
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(animateSize)
+            .padding(10.dp)
+            .height(35.dp)
+
+            .background(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+    ) {
+
+
+        Row(
             modifier = Modifier
-                .fillMaxWidth(animateSize)
-                .padding(10.dp)
-                .height(35.dp)
-
+                .fillMaxHeight()
+                .fillMaxWidth(width)
                 .background(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-        ) {
+                    details.color, shape = CircleShape
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
 
 
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(width)
-                    .background(
-                        details.color, shape = CircleShape
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-
-                ) {
-
-
-            }
         }
+    }
 
 }

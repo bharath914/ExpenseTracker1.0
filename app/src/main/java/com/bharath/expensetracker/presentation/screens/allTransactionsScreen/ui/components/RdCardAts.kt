@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.screens.allTransactionsScreen.viewmodel.ATSViewModel
+import com.bharath.expensetracker.presentation.screens.allTransactionsScreen.viewmodel.ATSViewModel
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.bharath.expensetracker.ui.theme.Lato_Bold
 import com.bharath.expensetracker.ui.theme.Lato_Regular

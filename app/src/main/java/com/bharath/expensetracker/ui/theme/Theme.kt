@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
 
 
 private val DarkColorScheme = darkColorScheme(
@@ -53,9 +53,6 @@ fun ExpenseTrackerTheme(
 ) {
 
 
-
-
-    
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -81,6 +78,7 @@ fun ExpenseTrackerTheme(
         content = content
     )
 }
+
 @Composable
 fun CustomExpenseTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

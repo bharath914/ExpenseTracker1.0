@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.bharath.expensetracker.common.Cons
 import com.bharath.expensetracker.data.model.Transactions
 import com.bharath.expensetracker.data.repository.RepositoryInterface
-import com.bharath.expensetracker.screens.graphscreen.ui.screens.data.Details
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.screens.data.Details
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

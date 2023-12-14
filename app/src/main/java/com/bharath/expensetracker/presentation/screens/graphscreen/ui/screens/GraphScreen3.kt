@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bharath.expensetracker.screens.graphscreen.viewmodel.GraphViewModel
+import com.bharath.expensetracker.presentation.screens.graphscreen.viewmodel.GraphViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Regular
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 

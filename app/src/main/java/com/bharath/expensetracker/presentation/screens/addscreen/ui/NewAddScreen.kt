@@ -1,6 +1,6 @@
 package com.bharath.expensetracker.presentation.screens.addscreen.ui
 
-import  androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -58,9 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bharath.expensetracker.data.model.Transactions
-import com.bharath.expensetracker.presentation.screens.addscreen.cleanFloatingNumberString
-import com.bharath.expensetracker.screens.addscreen.viewmodel.AddToDBViewModel
-import com.bharath.expensetracker.screens.settings.viewmodel.SettingsVm
+import com.bharath.expensetracker.presentation.screens.addscreen.viewmodel.AddToDBViewModel
+import com.bharath.expensetracker.presentation.screens.settings.viewmodel.SettingsVm
+
 import com.bharath.expensetracker.ui.theme.Inter_SemiBold
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -489,9 +489,10 @@ fun NewAddScreen() {
 
 
                             tapToSave = true
-                            formattedNumber = com.bharath.expensetracker.presentation.screens.addscreen.cleanFloatingNumberString(
-                                amountInInr
-                            )!!
+                            formattedNumber =
+                                com.bharath.expensetracker.presentation.screens.addscreen.cleanFloatingNumberString(
+                                    amountInInr
+                                )!!
 
 
                             val transactionDetail = Transactions(

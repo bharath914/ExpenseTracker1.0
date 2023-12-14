@@ -25,15 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bharath.expensetracker.screens.graphscreen.ui.components.HighestOfTransactions
-import com.bharath.expensetracker.screens.graphscreen.ui.components.PercentageText
-import com.bharath.expensetracker.screens.graphscreen.ui.components.PieChart
-import com.bharath.expensetracker.screens.graphscreen.viewmodel.GraphViewModel
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.components.HighestOfTransactions
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.components.PercentageText
+import com.bharath.expensetracker.presentation.screens.graphscreen.ui.components.PieChart
+import com.bharath.expensetracker.presentation.screens.graphscreen.viewmodel.GraphViewModel
 import com.bharath.expensetracker.ui.theme.Inter_Bold
 
 @Composable
 fun GraphScreen1(
-    graphViewModel:GraphViewModel
+    graphViewModel: GraphViewModel
 ) {
     Surface(color = MaterialTheme.colorScheme.surface) {
 
